@@ -1,0 +1,18 @@
+module.exports = {
+    defaultSeverity: "error",
+    extends: [
+        "tslint-config-airbnb"
+    ],
+    jsRules: {},
+    rules: {
+        'ter-indent': [
+            true,
+            4
+        ],
+    },
+    rulesDirectory: []
+};
+
+
+
+

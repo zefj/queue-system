@@ -1,0 +1,80 @@
+Cloud-based online queueing system
+
+Koncept:
+  Kompleksowy system kolejkowania, umozliwiajacy proste sledzenie swojego miejsca w kolejce do placowek nie stosujacych godzinowych terminow lub posiadajacych znaczne, nieprzewidziane opoznienia w realizacji rezerwacji. Do zastosowania w placowkach medycznych, restauracjach, urzedach itd.
+
+Core features:
+  ☐ SaaS w przegladarce
+  ☐ Kompleksowosc, duzo typow kolejek umozliwiajacych obsluge dowolnego use-case'a (w praktyce mozna wyszczegolnic raptem kilka, spokojnie do obsluzenia jednym modelem danych)
+  ☐ Przejrzysty panel administracyjny - ustawienia sposobu kolejkowania (? TODO), notyfikacji, sposobu wyliczania orientacyjnej godziny wizyty
+  ☐ Prosty i intuicyjny import kolejek (CSV, reczne wpisywanie w wygodnym formularzu, dodawanie pojedynczych biletow za pomoca 1 klikniecia, pobor biletow ze specjalnej podstrony, kiedys moze pobor online)
+  ☐ Monitorowanie kolejki:
+    ☐ Wlasnego numeru w kolejce za pomoca unikalnego adresu (wspolna domena, subdomeny dla klientow? todo)
+    ☐ Ogolnego stanu kolejki: ostatni obsluzony numer, najblizszy wolny numer, sredni czas obslugi jednego numeru, orientacyjny czas obslugi itd.
+  ☐ Notyfikacje uzytkownikow - link do strony z monitorem
+  ☐ Widgety do umieszczenia na stronie
+  ☐ Integracje, API, ladny i prosty klient
+
+  Ewentualnie:
+    ☐ Pobieranie numerow online
+    ☐ Apki klienckie (w sumie pewnie jakies podstrony za systemem uprawnien) - zarzadzanie, pobor numeru, wyswietlanie statusu kolejki (na monitorach), wezwanie nastepnego numeru etc.
+    ☐ White label (themes?), przy monitorze online informacje kontaktowe, mapa, czas dojazdu czy cos takiego
+    ☐ Analytics
+
+☐ Kolejka 1:N Bilet, Kolejka 1:N Pokoj
+☐ Bilet przypisany jest do kolejki, ale "obslugiwany" jest w pokoju. Kolejka z wieloma pokojami przydziela numer do pokoju w momencie "zwolnienia", w praktyce obsluga pokoju (jakas kasjerka czy cos) bedzie klikac "zawolaj nastepny"
+
+Ustawienia:
+  Tryb (wazne!):
+    ☐ Reczne dodawanie biletow (reczne wprowadzanie rekordow - np. burgerownia jakas czy cos, placowka z zewnetrzna rejestracja za pomoca eksportu z systemu rezerwacji online etc.)
+      ☐ Mozliwosc notyfikacji etc.
+    ☐ "Automatyczne" generowanie biletow (pobor przez klienta)(Decathlon, zawolaj nastepnego klienta, strona do poboru biletow)
+    ☐ (Ewentualnie kiedys) Wirtualna kolejka: pobor biletow online (czy moze wraz z systemem stacjonarnym?)
+  Sposoby kolejkowania:
+    ☐ Jedna kolejka - jeden pokoj
+    ☐ Jedna kolejka - wiele pokoi
+  ☐ Notyfikacje (brak, mail, sms), informacja o obsludze bliskiego numeru
+  ☐ Sposob wyliczania orientacyjnej godziny wizyty - teoria kolejek, sztywny czas obslugi, typy wizyt
+  ☐ Numeracja:
+    ☐ [0-9]{1-4}
+    ☐ [0-9]{1-4}-[A-Z]{1-2} w celu latwiejszego zapamietania
+    ☐ Piktogramy z roznych dziedzin?
+  Import kolejek:
+    ☐ Parser CSV - dowolny format, podswietlanie kolumn
+    ☐ Reczne wpisywanie - wygodny formularz, obsluga klawiatura itp.
+    ☐ API
+    ☐ Opcjonalne w przypadku wykorzystywania systemu "stacjonarnego"
+Interfejs (todo):
+☐ Panel glowny - tworzenie kolejek, tworzenie pokoi, dodawanie biletow
+☐ Panel pokoju - obsluga biletow (zawolaj nastepnego, obsluga danego biletu)
+☐ Uprawnienia do pokoi
+☐ Strona ze ogolnym stanem kolejki, do wyswietlenia np. na monitorze (jak w urzedach)
+☐ Strony dla pokoi, cos w stylu monitorow przy kasach w decathlonie
+☐ Pobor biletow - TODO
+Monitorowanie kolejki online:
+  ☐ Unikalny URL dla kazdego z klientow
+  ☐ Aktualny numer
+  ☐ Nastepny wolny numer
+  Teoria kolejek:
+    ☐ Sredni czas obslugi jednego numeru
+    ☐ Orientacyjny czas wizyty numeru X
+Notyfikacje:
+  ☐ Mail za free
+  ☐ SMS prepaid
+  ☐ Przydzielenie numeru
+  ☐ Obsluga bliskiego numeru
+Integracje, API:
+  ☐ Widgety na strone
+  ☐ Proste API do integracji z popularnymi systemami obslugi placowek medycznych, restauracji, urzedow, etc.
+Monetyzacja:
+  ☐ X numerow i ograniczona funkcjonalnosc za free
+  ☐ System stacjonarny moze open source? Wtedy monetyzacja SaaS, supportu, monitoringu online
+Statystyki i analytics:
+  ☐ TODO
+Technikalia:
+  ☐ W przyszlosci moze ograniczona funkcjonalnosc jako self-hosted? Sentry, Gitlab
+
+Generate models from database:
+./node_modules/sequelize-auto/bin/sequelize-auto -h localhost -d queue_db -u app -x password -p 3306 --dialect mysql -c ./database.json -o ./models
+Run migrations:
+./node_modules/db-migrate/bin/db-migrate up
