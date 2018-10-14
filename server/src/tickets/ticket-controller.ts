@@ -1,8 +1,8 @@
-import { Request, Response } from "express";
+import { Request, Response } from 'express';
 const Joi = require('joi');
 const errors = require('common-errors');
 
-import * as Sequelize from "sequelize";
+import * as Sequelize from 'sequelize';
 const sequelize: Sequelize.Sequelize = require('../database');
 const Ticket = sequelize.import('./ticket-model');
 
@@ -22,7 +22,7 @@ export const create: Function = (req: Request, res: Response, next: any) => {
     return Ticket
         .findOne({
             where: { queue_id: req.params.queue },
-            order: [[ 'number', 'DESC' ]]
+            order: [['number', 'DESC']],
         })
         .then((ticket: any) => {
             let number = 1;
@@ -70,7 +70,7 @@ export const createMany: Function = (req: Request, res: Response, next: any) => 
     return Ticket
         .findOne({
             where: { queue_id: req.params.queue },
-            order: [[ 'number', 'DESC' ]]
+            order: [['number', 'DESC']],
         })
         .then((ticket: any) => {
             let number = 0; // Will increment in .map()
@@ -86,7 +86,7 @@ export const createMany: Function = (req: Request, res: Response, next: any) => 
         })
         .then((tickets: Array<Object>) => Ticket
             .bulkCreate(tickets)
-            .then((result: Object) => res.json({ success: true, tickets: result }))
+            .then((result: Object) => res.json({ success: true, tickets: result })),
         )
         .catch((error: Object) => {
             let exception = error;
@@ -152,7 +152,7 @@ export const serve: Function = (req: Request, res: Response, next: any) => {
         )
         .then((result: any) => {
             if (result[0] === 0) { // todo for some reason update() returns an array
-                throw new errors.NotFoundError(`Ticket does not exist or has already been served.`);
+                throw new errors.NotFoundError('Ticket does not exist or has already been served.');
             }
 
             return res.json({ success: true, result });
@@ -180,10 +180,10 @@ export const serveNext: Function = (req: Request, res: Response, next: any) => {
                 queue_id: req.params.queue,
                 served: false,
                 serving_room: {
-                    [sequelize.Op.eq]: null
+                    [sequelize.Op.eq]: null,
                 },
             },
-            order: [[ 'number', 'ASC' ]]
+            order: [['number', 'ASC']],
         })
         .then((ticket: any) => {
             if (!ticket) {

@@ -1,8 +1,8 @@
-import { Request, Response } from "express";
+import { Request, Response } from 'express';
 const Joi = require('joi');
 const errors = require('common-errors');
 
-import { Sequelize } from "sequelize";
+import { Sequelize } from 'sequelize';
 const sequelize: Sequelize = require('../database');
 const Queue = sequelize.import('./queue-model');
 
@@ -54,8 +54,8 @@ export const remove: Function = (req: Request, res: Response, next: any) => {
 
             return Queue
                 .destroy({ where: { name: req.body.name } })
-                .then(() => res.json({ success: true }))
+                .then(() => res.json({ success: true }));
         })
         .catch(next);
 };
-
+

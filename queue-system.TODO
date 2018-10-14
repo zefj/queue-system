@@ -78,3 +78,8 @@ Generate models from database:
 ./node_modules/sequelize-auto/bin/sequelize-auto -h localhost -d queue_db -u app -x password -p 3306 --dialect mysql -c ./database.json -o ./models
 Run migrations:
 ./node_modules/db-migrate/bin/db-migrate up
+
+
+TODO:
+- drop sequelize, use raw sql queries using mysql2 and this:
+https://github.com/felixfbecker/node-sql-template-strings

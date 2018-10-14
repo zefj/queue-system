@@ -1,8 +1,8 @@
-import { Request, Response } from "express";
+import { Request, Response } from 'express';
 const Joi = require('joi');
 const errors = require('common-errors');
 
-import { Sequelize } from "sequelize";
+import { Sequelize } from 'sequelize';
 const sequelize: Sequelize = require('../database');
 const Room = sequelize.import('./room-model');
 
@@ -21,7 +21,7 @@ export const getAll: Function = (req: Request, res: Response, next: any) => {
 
     return Room
         .findAll({
-            where: { queue_id: req.params.queue }
+            where: { queue_id: req.params.queue },
         })
         .then((rooms: Array<Object>) => res.json({ rooms }))
         .catch(next);
@@ -34,7 +34,7 @@ export const create: Function = (req: Request, res: Response, next: any) => {
         },
         body: {
             name: Joi.string().alphanum().max(32).required(),
-        }
+        },
     }).unknown(true);
 
     Joi.validate(req, schema, (error: Error) => {
