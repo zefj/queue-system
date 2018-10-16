@@ -1,0 +1,40 @@
+- hosts: all
+  become: yes
+  gather_facts: yes
+  pre_tasks:
+    - name: Update cache
+      apt:
+        update_cache: yes
+    - name: Install docker dependecies and other crap
+      apt:
+        name: "{{ item}}"
+      with_items:
+        - apt-transport-https
+        - ca-certificates
+        - curl
+        - gnupg2
+        - software-properties-common
+        - libpam-systemd 
+    - name: Add docker key
+      apt_key:
+        url: https://download.docker.com/linux/debian/gpg 
+        state: present
+    - name: Add docker repository
+      apt_repository:
+        repo: deb [arch=amd64] https://download.docker.com/linux/debian stretch stable
+        state: present
+  tasks:
+    - name: Install docker
+      apt:
+        name: docker-ce
+        state: present
+        update_cache: yes
+    - name: Add user to docker group
+      user:
+        name: vagrant
+        groups: docker
+        append: yes
+    - name: Restart user
+      systemd:
+        name: user@1000
+        state: restarted
