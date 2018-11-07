@@ -5,36 +5,40 @@
     - name: Update cache
       apt:
         update_cache: yes
-    - name: Install docker dependecies and other crap
+    - name: Install pip dependencies
+      # these are needed by the docker_service directive
+      pip:
+        name:
+          - docker
+          - docker-compose
+    - name: Install apt dependecies and other crap
       apt:
         name: "{{ item}}"
       with_items:
-        - apt-transport-https
-        - ca-certificates
         - curl
-        - gnupg2
-        - software-properties-common
-        - libpam-systemd 
-    - name: Add docker key
-      apt_key:
-        url: https://download.docker.com/linux/debian/gpg 
-        state: present
-    - name: Add docker repository
-      apt_repository:
-        repo: deb [arch=amd64] https://download.docker.com/linux/debian stretch stable
-        state: present
+  vars:
+    NODEJS_VERSION: "8"
+    ansible_distribution_release: "stretch" #trusty
   tasks:
-    - name: Install docker
-      apt:
-        name: docker-ce
+    - name: Install the gpg key for nodejs LTS
+      apt_key:
+        url: "https://deb.nodesource.com/gpgkey/nodesource.gpg.key"
+        state: present
+
+    - name: Install the nodejs LTS repos
+      apt_repository:
+        repo: "deb https://deb.nodesource.com/node_{{ NODEJS_VERSION }}.x {{ ansible_distribution_release }} main"
         state: present
         update_cache: yes
-    - name: Add user to docker group
-      user:
-        name: vagrant
-        groups: docker
-        append: yes
-    - name: Restart user
-      systemd:
-        name: user@1000
-        state: restarted
+
+    - name: Install the nodejs
+      apt:
+        name: nodejs
+        state: present
+
+    - name: Run the service defined in docker-compose.yml
+      docker_service:
+        project_src: .
+  tags: docker
+  roles:
+    - { role: "nickjj.docker", tags: ["docker"], become: yes, docker__users: ["admin"] }
