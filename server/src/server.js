@@ -1,20 +1,22 @@
-const ENV = 'development'; // todo
+process.env.NODE_ENV = 'development'; // todo
+console.log(`Starting app in ${process.env.NODE_ENV } mode...`);
 
 const express = require('express');
 const app = express();
-// const router = express.Router();
 const router = require('./router');
 const bodyParser = require('body-parser');
 const Joi = require('joi');
 const errors = require('common-errors');
 
+require('./database');
+
 // const mongo = require('./mongo');
 
-if (ENV === 'development') {
-    const mongo_express = require('mongo-express/lib/middleware');
-    const mongo_express_config = require('../mongo-express-config.js');
-    app.use('/mongo_express', mongo_express(mongo_express_config))
-}
+// if (process.env.node_env === 'development') {
+//     const mongo_express = require('mongo-express/lib/middleware');
+//     const mongo_express_config = require('../mongo-express-config.js');
+//     app.use('/mongo_express', mongo_express(mongo_express_config))
+// }
 
 const allowCrossDomain = require('./middlewares/allow-cross-domain');
 const errorHandler = require('./middlewares/error-handler');
@@ -48,22 +50,11 @@ app.use((req, res, next) => {
 
 const port = 3000;
 
-const sequelize = require('./database');
+app.use(errors.middleware.crashProtector());
 
-sequelize.authenticate()
-    .then(() => {
-        // mongo.connect()
-        //     .then((db) => {
-        app.use(errors.middleware.crashProtector());
+app.use('/', router);
+app.use(errorHandler);
 
-        app.use('/', router);
-        app.use(errorHandler);
-
-        app.listen(port, () => {
-            console.log(`App listening on port ${port}!`);
-        });
-            // });
-    })
-    .catch((error) => {
-        console.error(error);
-    });
+app.listen(port, () => {
+    console.log(`App listening on port ${port}!`);
+});

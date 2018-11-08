@@ -18,7 +18,7 @@
         - curl
   vars:
     NODEJS_VERSION: "8"
-    ansible_distribution_release: "stretch" #trusty
+    ansible_distribution_release: "stretch"
   tasks:
     - name: Install the gpg key for nodejs LTS
       apt_key:
@@ -34,6 +34,22 @@
     - name: Install the nodejs
       apt:
         name: nodejs
+        state: present
+
+    - name: Configure the Yarn APT key
+      apt_key:
+        url: https://dl.yarnpkg.com/debian/pubkey.gpg
+        state: present
+
+    - name: Add Yarn repository
+      apt_repository:
+        repo: 'deb https://dl.yarnpkg.com/debian/ stable main'
+        state: present
+        update_cache: yes
+
+    - name: Install Yarn
+      apt:
+        name: yarn
         state: present
 
     - name: Run the service defined in docker-compose.yml
