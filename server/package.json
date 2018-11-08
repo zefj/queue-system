@@ -6,15 +6,11 @@
   "devDependencies": {
     "@types/express": "^4.16.0",
     "@types/joi": "^13.4.4",
-    "@types/mongodb": "^3.1.4",
-    "@types/mongoose": "^5.2.9",
     "@types/node": "^10.9.3",
-    "@types/sequelize": "^4.27.27",
     "db-migrate": "^0.11.3",
     "db-migrate-mysql": "^1.1.10",
     "mongo-express": "^0.49.0",
     "nodemon": "^1.18.3",
-    "sequelize-auto": "^0.4.29",
     "ts-node": "^7.0.1",
     "tsconfig-paths": "^3.6.0",
     "tslint": "^5.11.0",
@@ -24,13 +20,13 @@
   "dependencies": {
     "body-parser": "^1.18.3",
     "common-errors": "^1.0.5",
+    "db-errors": "^0.1.0",
     "express": "^4.16.3",
     "joi": "^13.6.0",
+    "knex": "^0.15.2",
     "lodash": "^4.17.10",
-    "mongodb": "^3.1.4",
-    "mongoose": "^5.2.10",
     "mysql2": "^1.6.1",
-    "sequelize": "^4.39.0"
+    "objection": "^1.3.0"
   },
   "scripts": {
     "start": "node_modules/nodemon/bin/nodemon.js -L --config nodemon-config.json",

@@ -1,43 +1,29 @@
 import { Request, Response } from 'express';
-const Joi = require('joi');
+const joi = require('joi');
 const errors = require('common-errors');
 
-import { Sequelize } from 'sequelize';
-const sequelize: Sequelize = require('../database');
-const Queue = sequelize.import('./queue-model');
+import Queue from './queue-model';
+
+import {
+    create as createQueue,
+    remove as removeQueue,
+} from './queue-actions';
 
 export const getAll: Function = (req: Request, res: Response, next: any) => {
-    return Queue.findAll()
-        .then((queues) => res.json({ queues }))
-        .catch(next);
+    return Queue.query().then((queues: Queue[]) => res.json({ queues })).catch(next);
 };
 
 export const create: Function = (req: Request, res: Response, next: any) => {
-    const schema = Joi.object().keys({
-        name: Joi.string().alphanum().max(32).required(), // TODO: allow more than alphanum
-    });
-
-    Joi.validate(req.body, schema, (error: Error) => {
-        if (!error) {
-            return;
-        }
-
-        throw new errors.ValidationError(error.message);
-    });
-
-    // TODO: catch the constraint exception like in server/src/rooms/room-controller.ts:61
-    return Queue
-        .create({ name: req.body.name })
-        .then((queue) => res.json({ success: true, queue }))
+    // name validation in action
+    return createQueue(req.body.name)
+        .then((queues: Queue) => res.json({ queues }))
         .catch(next);
 };
 
 export const remove: Function = (req: Request, res: Response, next: any) => {
-    const schema = Joi.object().keys({
-        name: Joi.string().alphanum().max(32).required(), // TODO: remove by id?
-    });
+    const schema = joi.number().integer().required();
 
-    Joi.validate(req.body, schema, (error: Error) => {
+    joi.validate(req.params.queue, schema, (error: Error) => {
         if (!error) {
             return;
         }
@@ -45,17 +31,7 @@ export const remove: Function = (req: Request, res: Response, next: any) => {
         throw new errors.ValidationError(error.message);
     });
 
-    return Queue
-        .findOne({ where: { name: req.body.name } })
-        .then((queue) => {
-            if (!queue) {
-                throw new errors.NotFoundError(`Queue of name ${req.body.name} does not exist.`);
-            }
-
-            return Queue
-                .destroy({ where: { name: req.body.name } })
-                .then(() => res.json({ success: true }));
-        })
+    return removeQueue(req.params.queue)
+        .then((removed: number) => res.json({ removed })) // TODO: consider: error on not removed?
         .catch(next);
 };
-
