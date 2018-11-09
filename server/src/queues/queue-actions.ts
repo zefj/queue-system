@@ -13,7 +13,7 @@ export const getQueueById = (id: number): Promise<Queue> => {
             }
 
             return queue;
-        })
+        });
 };
 
 export const create = (name: string): Promise<Queue> => {

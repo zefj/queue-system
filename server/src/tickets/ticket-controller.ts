@@ -9,7 +9,7 @@ import {
     serveNext as serveNextTicket,
 } from './ticket-actions';
 
-import Ticket from "./ticket-model";
+import Ticket from './ticket-model';
 
 export const create: Function = (req: Request, res: Response, next: any) => {
     const schema = joi.number().integer().required();

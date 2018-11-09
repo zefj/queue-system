@@ -9,6 +9,13 @@ module.exports = {
             true,
             4
         ],
+        'max-line-length': [
+            true,
+            {
+                "limit": 120,
+                "ignore-pattern": "throw new (.*?);$"
+            }
+        ]
     },
     rulesDirectory: []
 };
