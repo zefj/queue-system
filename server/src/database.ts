@@ -1,18 +1,10 @@
 import { Constructor, Model, QueryBuilder, Transaction } from 'objection';
+const config = require('../knex-config');
 
 const dbErrors = require('db-errors');
-
 const _knex = require('knex');
 
-export const knex = _knex({
-    client: 'mysql',
-    connection: {
-        host: 'localhost',
-        user: 'app',
-        password: 'password',
-        database: 'queue_db',
-    },
-});
+export const knex = _knex(config);
 
 // Give the knex object to objection.
 Model.knex(knex);
