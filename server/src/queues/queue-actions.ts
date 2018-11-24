@@ -17,7 +17,7 @@ export const getQueueById = (id: number): Promise<Queue> => {
 };
 
 export const create = (name: string): Promise<Queue> => {
-    const schema = joi.string().alphanum().max(32).required(); // TODO: allow more than alphanum
+    const schema = joi.string().max(32).required(); // TODO: allow more than alphanum
 
     joi.validate(name, schema, (error: Error) => {
         if (!error) {

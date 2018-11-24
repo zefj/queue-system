@@ -1,7 +1,7 @@
 exports.up = function(knex, Promise) {
     return knex.schema.createTable('tickets', (table) => {
         table.increments();
-        table.integer('number').notNullable();
+        table.string('number', 11).notNullable();
 
         table.integer('queue_id').unsigned().notNullable();
         table

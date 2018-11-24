@@ -20,7 +20,7 @@ export default class Queue extends TimestampsModel {
         },
         tickets: {
             relation: Model.HasManyRelation,
-            modelClass: `${__dirname}/../tickets/ticket-model2.ts`,
+            modelClass: `${__dirname}/../tickets/ticket-model.ts`,
             join: {
                 from: 'queues.id',
                 to: 'tickets.queue_id',

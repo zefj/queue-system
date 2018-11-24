@@ -20,7 +20,7 @@ export default class Room extends TimestampsModel {
         },
         tickets: {
             relation: Model.HasManyRelation,
-            modelClass: `${__dirname}/../tickets/ticket-model2.ts`,
+            modelClass: `${__dirname}/../tickets/ticket-model.ts`,
             join: {
                 from: 'rooms.id',
                 to: 'tickets.serving_room',

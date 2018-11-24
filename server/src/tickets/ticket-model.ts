@@ -6,7 +6,7 @@ export default class Ticket extends TimestampsModel {
     static idColumn = 'id';
 
     readonly id!: number;
-    number!: number;
+    number!: string;
     queue_id!: number;
     served?: boolean;
     serving_room?: number;

@@ -16,7 +16,14 @@ export const create = (queueId: number): Promise<Ticket> => {
                 .orderBy('number', 'desc')
                 .first()
                 .then((ticket: Ticket | undefined) => {
-                    const number = (_.get(ticket, 'number') || 0) + 1;
+                    // todo: implement this as a function to facilitate letter-prefix needs. parseInt for now since we
+                    // don't have that functionality yet
+                    const number = (
+                        parseInt(
+                            _.get(ticket, 'number') || 0,
+                            10,
+                        ) + 1
+                    ).toString();
 
                     return queue
                         .$relatedQuery<Ticket>('tickets')
@@ -54,6 +61,10 @@ export const serve = (ticketId: number, roomId: number): Promise<Ticket> => {
                         throw new errors.NotPermittedError(`Ticket of id ${ticketId} has already been served.`);
                     }
 
+                    if (ticket.queue_id !== room.queue_id) {
+                        throw new errors.NotPermittedError(`Cannot serve ticket of id ${ticketId} in room ${roomId}. Entities belong to different queues.`);
+                    }
+
                     return ticket;
                 })
                 .then((ticket: Ticket) => {
@@ -76,9 +87,10 @@ export const serveNext = (roomId: number): Promise<Ticket> => {
         })
         .then((room: Room) => {
             return Ticket.query()
-                .where('served', false)
+                .where('queue_id', room.queue_id)
+                .andWhere('served', false)
                 .whereNull('serving_room')
-                .orderBy('number', 'asc')
+                .orderBy('number', 'asc') // todo: sort by ID, not number?
                 .first()
                 .then((ticket: Ticket | undefined) => {
                     if (!ticket) {

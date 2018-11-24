@@ -7,7 +7,7 @@ import Queue from '../queues/queue-model';
 import { getQueueById } from '../queues/queue-actions';
 
 export const create = (queueId: number, name: string): Promise<Room> => {
-    const schema = joi.string().alphanum().max(32).required(); // TODO: allow more than alphanum
+    const schema = joi.string().max(32).required(); // TODO: allow more than alphanum
 
     joi.validate(name, schema, (error: Error) => {
         if (!error) {

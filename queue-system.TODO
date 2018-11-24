@@ -36,9 +36,9 @@ Ustawienia:
   ☐ Notyfikacje (brak, mail, sms), informacja o obsludze bliskiego numeru
   ☐ Sposob wyliczania orientacyjnej godziny wizyty - teoria kolejek, sztywny czas obslugi, typy wizyt
   ☐ Numeracja:
-    ☐ [0-9]{1-4}
-    ☐ [0-9]{1-4}-[A-Z]{1-2} w celu latwiejszego zapamietania
-    ☐ Piktogramy z roznych dziedzin?
+    ☐ [0-9]{1-N}
+    ☐ Opcjonalny literowy prefix dla pokoju (B69) [A-Z]{1-2}[0-9]{1-N}
+    ☐ Piktogramy/emoji z roznych dziedzin?
   Import kolejek:
     ☐ Parser CSV - dowolny format, podswietlanie kolumn
     ☐ Reczne wpisywanie - wygodny formularz, obsluga klawiatura itp.
@@ -69,7 +69,8 @@ Integracje, API:
 Monetyzacja:
   ☐ X numerow i ograniczona funkcjonalnosc za free
   ☐ System stacjonarny moze open source? Wtedy monetyzacja SaaS, supportu, monitoringu online
-Statystyki i analytics:
+  ☐ Wersja demonstracyjna: jedna wspolna instancja, ale trzeba sie zarejestrowac (zbiorka maili ;))
+  Statystyki i analytics:
   ☐ TODO
 Technikalia:
   ☐ W przyszlosci moze ograniczona funkcjonalnosc jako self-hosted? Sentry, Gitlab
@@ -78,3 +79,7 @@ Generate new migration:
 node ./node_modules/knex/bin/cli.js migrate:make --knexfile="knex-config.js" ${TABLE_NAME}
 Run migrations:
 ./node_modules/knex/bin/cli.js migrate:latest --knexfile="knex-config.js"
+
+
+TODO 24-25.11:
+  ☐ generateTicketNumber - funkcja generujaca numer biletu na podstawie ustawienia numeracji
