@@ -1,3 +1,4 @@
+/* tslint:disable:variable-name */
 import { Model } from 'objection';
 
 import { TimestampsModel } from '../database';

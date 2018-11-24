@@ -39,6 +39,7 @@ Ustawienia:
     ☐ [0-9]{1-N}
     ☐ Opcjonalny literowy prefix dla pokoju (B69) [A-Z]{1-2}[0-9]{1-N}
     ☐ Piktogramy/emoji z roznych dziedzin?
+    ☐ https://github.com/fent/ret.js - tym mozna zrobic walidator regexa i generator pierwszego numeru dla dowolnej maski
   Import kolejek:
     ☐ Parser CSV - dowolny format, podswietlanie kolumn
     ☐ Reczne wpisywanie - wygodny formularz, obsluga klawiatura itp.
@@ -82,4 +83,4 @@ Run migrations:
 
 
 TODO 24-25.11:
-  ☐ generateTicketNumber - funkcja generujaca numer biletu na podstawie ustawienia numeracji
+  ✔ generateTicketNumber - funkcja generujaca numer biletu na podstawie ustawienia numeracji @done(18-11-24 23:39)

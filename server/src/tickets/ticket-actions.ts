@@ -8,22 +8,22 @@ import Room from '../rooms/room-model';
 
 import { getQueueById } from '../queues/queue-actions';
 
+import incrementIdentifier from './ticket-numbering';
+
 export const create = (queueId: number): Promise<Ticket> => {
     return getQueueById(queueId)
         .then((queue: Queue) => {
             return queue
                 .$relatedQuery<Ticket>('tickets')
-                .orderBy('number', 'desc')
+                .orderBy('id', 'desc')
                 .first()
                 .then((ticket: Ticket | undefined) => {
-                    // todo: implement this as a function to facilitate letter-prefix needs. parseInt for now since we
-                    // don't have that functionality yet
-                    const number = (
-                        parseInt(
-                            _.get(ticket, 'number') || 0,
-                            10,
-                        ) + 1
-                    ).toString();
+                    // TOdo: replace '0' with an identifier-generator function
+                    const number = incrementIdentifier(
+                        _.get(ticket, 'number') || '0',
+                        Ticket.numberRegex, // todo: this should be configurable on a per-queue basis
+                        Ticket.incrementRegexGroup,
+                    );
 
                     return queue
                         .$relatedQuery<Ticket>('tickets')
@@ -90,7 +90,7 @@ export const serveNext = (roomId: number): Promise<Ticket> => {
                 .where('queue_id', room.queue_id)
                 .andWhere('served', false)
                 .whereNull('serving_room')
-                .orderBy('number', 'asc') // todo: sort by ID, not number?
+                .orderBy('id', 'asc') // todo: sort by ID, not number?
                 .first()
                 .then((ticket: Ticket | undefined) => {
                     if (!ticket) {

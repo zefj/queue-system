@@ -15,7 +15,8 @@ module.exports = {
                 "limit": 120,
                 "ignore-pattern": "throw new (.*?);$"
             }
-        ]
+        ],
+        'import-name': [false]
     },
     rulesDirectory: []
 };
