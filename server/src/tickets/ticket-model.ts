@@ -1,12 +1,17 @@
+/* tslint:disable:variable-name */
 import { Model } from 'objection';
-import { TimestampsModel } from '../database';
+import { TimestampsMixin, TenantModel } from '../database';
 
-export default class Ticket extends TimestampsModel {
+export default class Ticket extends TimestampsMixin(TenantModel) {
     static tableName = 'tickets';
     static idColumn = 'id';
 
+    // todo: these two should be configurable on a per-queue basis
+    static numberRegex = /^([A-Z]{0,3})([0-9]{1,4})$/g;
+    static incrementRegexGroup = 1;
+
     readonly id!: number;
-    number!: number;
+    number!: string;
     queue_id!: number;
     served?: boolean;
     serving_room?: number;

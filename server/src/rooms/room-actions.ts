@@ -6,8 +6,8 @@ import Queue from '../queues/queue-model';
 
 import { getQueueById } from '../queues/queue-actions';
 
-export const create = (queueId: number, name: string): Promise<Room> => {
-    const schema = joi.string().alphanum().max(32).required(); // TODO: allow more than alphanum
+export const create = (tenant, queueId: number, name: string): Promise<Room> => {
+    const schema = joi.string().max(32).required(); // TODO: allow more than alphanum
 
     joi.validate(name, schema, (error: Error) => {
         if (!error) {
@@ -17,10 +17,11 @@ export const create = (queueId: number, name: string): Promise<Room> => {
         throw new errors.ValidationError(error.message);
     });
 
-    return getQueueById(queueId)
+    return getQueueById(tenant, queueId)
         .then((queue: Queue) => {
             return queue
                 .$relatedQuery<Room>('rooms')
+                .context({ tenant })
                 .insert({ name })
                 .catch((error: Error) => {
                     if (error instanceof Room.errors.UniqueViolationError) {
@@ -32,7 +33,7 @@ export const create = (queueId: number, name: string): Promise<Room> => {
         });
 };
 
-export const remove = (roomId: number): Promise<number> => {
-    return Room.query()
+export const remove = (tenant, roomId: number): Promise<number> => {
+    return Room.query().context({ tenant })
         .deleteById(roomId);
 };

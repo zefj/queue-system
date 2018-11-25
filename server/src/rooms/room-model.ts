@@ -1,7 +1,8 @@
+/* tslint:disable:variable-name */
 import { Model } from 'objection';
-import { TimestampsModel } from '../database';
+import { TimestampsMixin, TenantModel } from '../database';
 
-export default class Room extends TimestampsModel {
+export default class Room extends TimestampsMixin(TenantModel) {
     static tableName = 'rooms';
     static idColumn = 'id';
 
@@ -20,7 +21,7 @@ export default class Room extends TimestampsModel {
         },
         tickets: {
             relation: Model.HasManyRelation,
-            modelClass: `${__dirname}/../tickets/ticket-model2.ts`,
+            modelClass: `${__dirname}/../tickets/ticket-model.ts`,
             join: {
                 from: 'rooms.id',
                 to: 'tickets.serving_room',

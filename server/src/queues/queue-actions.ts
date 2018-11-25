@@ -3,8 +3,8 @@ const errors = require('common-errors');
 
 import Queue from './queue-model';
 
-export const getQueueById = (id: number): Promise<Queue> => {
-    return Queue.query()
+export const getQueueById = (tenant, id: number): Promise<Queue> => {
+    return Queue.query().context({ tenant })
         .where('id', id)
         .first()
         .then((queue: Queue | undefined) => {
@@ -13,11 +13,11 @@ export const getQueueById = (id: number): Promise<Queue> => {
             }
 
             return queue;
-        })
+        });
 };
 
-export const create = (name: string): Promise<Queue> => {
-    const schema = joi.string().alphanum().max(32).required(); // TODO: allow more than alphanum
+export const create = (tenant: string, name: string): Promise<Queue> => {
+    const schema = joi.string().max(32).required(); // TODO: allow more than alphanum
 
     joi.validate(name, schema, (error: Error) => {
         if (!error) {
@@ -27,11 +27,11 @@ export const create = (name: string): Promise<Queue> => {
         throw new errors.ValidationError(error.message);
     });
 
-    return Queue.query()
+    return Queue.query().context({ tenant })
         .insert({ name });
 };
 
-export const remove = (queueId: number): Promise<number> => {
-    return Queue.query()
+export const remove = (tenant: string, queueId: number): Promise<number> => {
+    return Queue.query().context({ tenant })
         .deleteById(queueId);
 };

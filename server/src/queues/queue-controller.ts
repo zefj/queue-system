@@ -10,12 +10,16 @@ import {
 } from './queue-actions';
 
 export const getAll: Function = (req: Request, res: Response, next: any) => {
-    return Queue.query().then((queues: Queue[]) => res.json({ queues })).catch(next);
+    return Queue
+        .query()
+        .context({ tenant: req.locals.tenant })
+        .then((queues: Queue[]) => res.json({ queues }))
+        .catch(next);
 };
 
 export const create: Function = (req: Request, res: Response, next: any) => {
     // name validation in action
-    return createQueue(req.body.name)
+    return createQueue(req.locals.tenant, req.body.name)
         .then((queues: Queue) => res.json({ queues }))
         .catch(next);
 };
@@ -31,7 +35,7 @@ export const remove: Function = (req: Request, res: Response, next: any) => {
         throw new errors.ValidationError(error.message);
     });
 
-    return removeQueue(req.params.queue)
+    return removeQueue(req.locals.tenant, req.params.queue)
         .then((removed: number) => res.json({ removed })) // TODO: consider: error on not removed?
         .catch(next);
 };

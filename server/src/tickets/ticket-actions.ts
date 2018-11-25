@@ -8,30 +8,39 @@ import Room from '../rooms/room-model';
 
 import { getQueueById } from '../queues/queue-actions';
 
-export const create = (queueId: number): Promise<Ticket> => {
-    return getQueueById(queueId)
+import incrementIdentifier from './ticket-numbering';
+
+export const create = (tenant, queueId: number): Promise<Ticket> => {
+    return getQueueById(tenant, queueId)
         .then((queue: Queue) => {
             return queue
                 .$relatedQuery<Ticket>('tickets')
-                .orderBy('number', 'desc')
+                .context({ tenant })
+                .orderBy('id', 'desc')
                 .first()
                 .then((ticket: Ticket | undefined) => {
-                    const number = (_.get(ticket, 'number') || 0) + 1;
+                    // TOdo: replace '0' with an identifier-generator function
+                    const number = incrementIdentifier(
+                        _.get(ticket, 'number') || '0',
+                        Ticket.numberRegex, // todo: this should be configurable on a per-queue basis
+                        Ticket.incrementRegexGroup,
+                    );
 
                     return queue
                         .$relatedQuery<Ticket>('tickets')
+                        .context({ tenant })
                         .insert({ number });
                 });
         });
 };
 
-export const remove = (ticketId: number): Promise<number> => {
-    return Ticket.query()
+export const remove = (tenant, ticketId: number): Promise<number> => {
+    return Ticket.query().context({ tenant })
         .deleteById(ticketId);
 };
 
-export const serve = (ticketId: number, roomId: number): Promise<Ticket> => {
-    return Room.query()
+export const serve = (tenant, ticketId: number, roomId: number): Promise<Ticket> => {
+    return Room.query().context({ tenant })
         .where('id', roomId)
         .first()
         .then((room: Room | undefined) => {
@@ -42,7 +51,7 @@ export const serve = (ticketId: number, roomId: number): Promise<Ticket> => {
             return room;
         })
         .then((room: Room) => {
-            return Ticket.query()
+            return Ticket.query().context({ tenant })
                 .where('id', ticketId)
                 .first()
                 .then((ticket: Ticket | undefined) => {
@@ -54,17 +63,22 @@ export const serve = (ticketId: number, roomId: number): Promise<Ticket> => {
                         throw new errors.NotPermittedError(`Ticket of id ${ticketId} has already been served.`);
                     }
 
+                    if (ticket.queue_id !== room.queue_id) {
+                        throw new errors.NotPermittedError(`Cannot serve ticket of id ${ticketId} in room ${roomId}. Entities belong to different queues.`);
+                    }
+
                     return ticket;
                 })
                 .then((ticket: Ticket) => {
                     return ticket.$query()
+                        .context({ tenant })
                         .patchAndFetch({ served: true, serving_room: room.id });
                 });
         });
 };
 
-export const serveNext = (roomId: number): Promise<Ticket> => {
-    return Room.query()
+export const serveNext = (tenant, roomId: number): Promise<Ticket> => {
+    return Room.query().context({ tenant })
         .where('id', roomId)
         .first()
         .then((room: Room | undefined) => {
@@ -75,10 +89,11 @@ export const serveNext = (roomId: number): Promise<Ticket> => {
             return room;
         })
         .then((room: Room) => {
-            return Ticket.query()
-                .where('served', false)
+            return Ticket.query().context({ tenant })
+                .where('queue_id', room.queue_id)
+                .andWhere('served', false)
                 .whereNull('serving_room')
-                .orderBy('number', 'asc')
+                .orderBy('id', 'asc') // todo: sort by ID, not number?
                 .first()
                 .then((ticket: Ticket | undefined) => {
                     if (!ticket) {
@@ -89,6 +104,7 @@ export const serveNext = (roomId: number): Promise<Ticket> => {
                 })
                 .then((ticket: Ticket) => {
                     return ticket.$query()
+                        .context({ tenant })
                         .patchAndFetch({ served: true, serving_room: room.id });
                 });
         });

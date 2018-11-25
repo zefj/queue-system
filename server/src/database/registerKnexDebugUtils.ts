@@ -1,54 +1,3 @@
-import { Constructor, Model, QueryBuilder, Transaction } from 'objection';
-
-const dbErrors = require('db-errors');
-
-const _knex = require('knex');
-
-export const knex = _knex({
-    client: 'mysql',
-    connection: {
-        host: 'localhost',
-        user: 'app',
-        password: 'password',
-        database: 'queue_db',
-    },
-});
-
-// Give the knex object to objection.
-Model.knex(knex);
-
-export class BaseModel extends Model {
-    static query<QM extends Model>(this: Constructor<QM>, trx?: Transaction): QueryBuilder<QM> {
-        return super.query.apply(this, trx).onError((err) => {
-            return Promise.reject(dbErrors.wrapError(err));
-        }) as QueryBuilder<QM>;
-    }
-
-    static errors = {
-        DBError: dbErrors.DBError,
-        UniqueViolationError: dbErrors.UniqueViolationError,
-        NotNullViolationError: dbErrors.NotNullViolationError,
-        ForeignKeyViolationError: dbErrors.ForeignKeyViolationError,
-        ConstraintViolationError: dbErrors.ConstraintViolationError,
-        CheckViolationError: dbErrors.CheckViolationError,
-        DataError: dbErrors.DataError,
-    };
-}
-
-export class TimestampsModel extends BaseModel {
-    created_at?: string;
-    updated_at?: string;
-
-    $beforeInsert() {
-        this.created_at = new Date().toJSON().slice(0, 19).replace('T', ' ');
-        this.updated_at = new Date().toJSON().slice(0, 19).replace('T', ' ');
-    }
-
-    $beforeUpdate() {
-        this.updated_at = new Date().toJSON().slice(0, 19).replace('T', ' ');
-    }
-}
-
 // https://spin.atomicobject.com/2017/03/27/timing-queries-knexjs-nodejs/
 const registerKnexDebugUtils = (knex) => {
     // The map used to store the query times, where the query unique
@@ -131,4 +80,4 @@ const registerKnexDebugUtils = (knex) => {
     };
 };
 
-registerKnexDebugUtils(knex);
+export default registerKnexDebugUtils;

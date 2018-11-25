@@ -28,18 +28,23 @@ app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 // This is only temporary
 // Each client will have his own schema
 app.use((req, res, next) => {
-    req.session = {
-        user: 'temporary-user-until-we-have-auth'
+    req.locals = {
+        user: 'temporary-user-until-we-have-auth',
+        tenant: 'queue_db',
     };
+
     next();
 });
 
 app.use((req, res, next) => {
     const schema = Joi.object().keys({
-        user: Joi.string().required(),
-    });
+        locals: Joi.object().keys({
+            user: Joi.string().required(),
+            tenant: Joi.string().required(),
+        }),
+    }).unknown();
 
-    Joi.validate(req.session, schema, (error) => {
+    Joi.validate(req, schema, (error) => {
         if (!error) {
             return next();
         }
