@@ -1,8 +1,8 @@
 /* tslint:disable:variable-name */
 import { Model } from 'objection';
-import { TimestampsModel } from '../database';
+import { TimestampsMixin, TenantModel } from '../database';
 
-export default class Ticket extends TimestampsModel {
+export default class Ticket extends TimestampsMixin(TenantModel) {
     static tableName = 'tickets';
     static idColumn = 'id';
 

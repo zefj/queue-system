@@ -1,8 +1,9 @@
 exports.up = function(knex, Promise) {
     return knex.schema.createTable('tickets', (table) => {
         table.increments();
-        table.string('number', 11).notNullable();
+        table.string('tenant', 32).notNullable();
 
+        table.string('number', 11).notNullable();
         table.integer('queue_id').unsigned().notNullable();
         table
             .foreign('queue_id')

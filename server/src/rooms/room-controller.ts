@@ -23,7 +23,7 @@ export const getAll: Function = (req: Request, res: Response, next: any) => {
     });
 
     // todo: move to actions?
-    return Room.query()
+    return Room.query().context({ tenant: req.locals.tenant })
         .where('queue_id', req.params.queue)
         .then((rooms: Room[]) => res.json({ rooms }))
         .catch(next);
@@ -43,7 +43,7 @@ export const create: Function = (req: Request, res: Response, next: any) => {
         throw new errors.ValidationError(error.message);
     });
 
-    return createRoom(req.params.queue, req.body.name)
+    return createRoom(req.locals.tenant, req.params.queue, req.body.name)
         .then((room: Room) => res.json({ room, success: true }))
         .catch(next);
 };
@@ -59,7 +59,7 @@ export const remove: Function = (req: Request, res: Response, next: any) => {
         throw new errors.ValidationError(error.message);
     });
 
-    return removeRoom(req.params.room)
+    return removeRoom(req.locals.tenant, req.params.room)
         .then((removed: number) => res.json({ removed })) // TODO: consider: error on not removed?
         .catch(next);
 };

@@ -1,8 +1,9 @@
 exports.up = function(knex, Promise) {
     return knex.schema.createTable('rooms', (table) => {
         table.increments();
-        table.string('name', 32).unique().notNullable(); // todo: max(32)
+        table.string('tenant', 32).notNullable();
 
+        table.string('name', 32).unique().notNullable();
         table.integer('queue_id').unsigned().notNullable();
         table
             .foreign('queue_id')

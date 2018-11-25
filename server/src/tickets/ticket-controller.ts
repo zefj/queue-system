@@ -22,7 +22,7 @@ export const create: Function = (req: Request, res: Response, next: any) => {
         throw new errors.ValidationError(error.message);
     });
 
-    return createTicket(req.params.queue)
+    return createTicket(req.locals.tenant, req.params.queue)
         .then((ticket: Ticket) => res.json({ ticket }))
         .catch(next);
 };
@@ -91,7 +91,7 @@ export const remove: Function = (req: Request, res: Response, next: any) => {
         throw new errors.ValidationError(error.message);
     });
 
-    return removeTicket(req.params.ticket)
+    return removeTicket(req.locals.tenant, req.params.ticket)
         .then((removed: number) => res.json({ removed })) // TODO: consider: error on not removed?
         .catch(next);
 };
@@ -110,7 +110,7 @@ export const serve: Function = (req: Request, res: Response, next: any) => {
         throw new errors.ValidationError(error.message);
     });
 
-    return serveTicket(req.params.ticket, req.params.room)
+    return serveTicket(req.locals.tenant, req.params.ticket, req.params.room)
         .then((ticket: Ticket) => res.json({ ticket, success: true }))
         .catch(next);
 };
@@ -128,7 +128,7 @@ export const serveNext: Function = (req: Request, res: Response, next: any) => {
         throw new errors.ValidationError(error.message);
     });
 
-    return serveNextTicket(req.params.room)
+    return serveNextTicket(req.locals.tenant, req.params.room)
         .then((ticket: Ticket) => res.json({ ticket, success: true }))
         .catch(next);
 };

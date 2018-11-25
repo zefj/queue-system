@@ -10,11 +10,12 @@ import { getQueueById } from '../queues/queue-actions';
 
 import incrementIdentifier from './ticket-numbering';
 
-export const create = (queueId: number): Promise<Ticket> => {
-    return getQueueById(queueId)
+export const create = (tenant, queueId: number): Promise<Ticket> => {
+    return getQueueById(tenant, queueId)
         .then((queue: Queue) => {
             return queue
                 .$relatedQuery<Ticket>('tickets')
+                .context({ tenant })
                 .orderBy('id', 'desc')
                 .first()
                 .then((ticket: Ticket | undefined) => {
@@ -27,18 +28,19 @@ export const create = (queueId: number): Promise<Ticket> => {
 
                     return queue
                         .$relatedQuery<Ticket>('tickets')
+                        .context({ tenant })
                         .insert({ number });
                 });
         });
 };
 
-export const remove = (ticketId: number): Promise<number> => {
-    return Ticket.query()
+export const remove = (tenant, ticketId: number): Promise<number> => {
+    return Ticket.query().context({ tenant })
         .deleteById(ticketId);
 };
 
-export const serve = (ticketId: number, roomId: number): Promise<Ticket> => {
-    return Room.query()
+export const serve = (tenant, ticketId: number, roomId: number): Promise<Ticket> => {
+    return Room.query().context({ tenant })
         .where('id', roomId)
         .first()
         .then((room: Room | undefined) => {
@@ -49,7 +51,7 @@ export const serve = (ticketId: number, roomId: number): Promise<Ticket> => {
             return room;
         })
         .then((room: Room) => {
-            return Ticket.query()
+            return Ticket.query().context({ tenant })
                 .where('id', ticketId)
                 .first()
                 .then((ticket: Ticket | undefined) => {
@@ -69,13 +71,14 @@ export const serve = (ticketId: number, roomId: number): Promise<Ticket> => {
                 })
                 .then((ticket: Ticket) => {
                     return ticket.$query()
+                        .context({ tenant })
                         .patchAndFetch({ served: true, serving_room: room.id });
                 });
         });
 };
 
-export const serveNext = (roomId: number): Promise<Ticket> => {
-    return Room.query()
+export const serveNext = (tenant, roomId: number): Promise<Ticket> => {
+    return Room.query().context({ tenant })
         .where('id', roomId)
         .first()
         .then((room: Room | undefined) => {
@@ -86,7 +89,7 @@ export const serveNext = (roomId: number): Promise<Ticket> => {
             return room;
         })
         .then((room: Room) => {
-            return Ticket.query()
+            return Ticket.query().context({ tenant })
                 .where('queue_id', room.queue_id)
                 .andWhere('served', false)
                 .whereNull('serving_room')
@@ -101,6 +104,7 @@ export const serveNext = (roomId: number): Promise<Ticket> => {
                 })
                 .then((ticket: Ticket) => {
                     return ticket.$query()
+                        .context({ tenant })
                         .patchAndFetch({ served: true, serving_room: room.id });
                 });
         });
