@@ -1,3 +1,5 @@
+// TODO: it would be a decent idea to obfuscate ticket ids
+
 const errors = require('common-errors');
 
 import * as _ from 'lodash';
@@ -5,6 +7,14 @@ import * as _ from 'lodash';
 import Ticket from './ticket-model';
 import Queue from '../queues/queue-model';
 import Room from '../rooms/room-model';
+
+import Bus from '../bus';
+
+import {
+    TicketCreatedEvent,
+    TicketRemovedEvent,
+    TicketServedEvent,
+} from './events';
 
 import { getQueueById } from '../queues/queue-actions';
 
@@ -29,17 +39,46 @@ export const create = (tenant, queueId: number): Promise<Ticket> => {
                     return queue
                         .$relatedQuery<Ticket>('tickets')
                         .context({ tenant })
-                        .insert({ number });
+                        .insert({ number })
+                        .then((ticket: Ticket) => {
+                            const event = new TicketCreatedEvent(tenant, ticket);
+                            Bus.emit(event);
+
+                            return ticket;
+                        });
                 });
         });
 };
 
-export const remove = (tenant, ticketId: number): Promise<number> => {
+export const remove = (tenant, ticketId: number): Promise<Ticket> => {
     return Ticket.query().context({ tenant })
-        .deleteById(ticketId);
+        .where('id', ticketId)
+        .andWhere('served', false) // can't remove served tickets
+        .whereNull('serving_room')
+        .first()
+        .then((ticket: Ticket | undefined) => {
+            if (!ticket) {
+                throw new errors.NotFoundError(`Ticket of id ${ticketId} does not exist.`);
+            }
+
+            return Ticket.query().context({ tenant })
+                .deleteById(ticket.id)
+                .then((affectedRows: number) => {
+                    if (!affectedRows) {
+                        // TODO: translate this into a critical error before returning to front-end
+                        throw new Error('Something went terribly wrong while attempting to delete a ticket');
+                    }
+
+                    const event = new TicketRemovedEvent(tenant, ticket);
+                    Bus.emit(event);
+                    return ticket;
+                });
+        });
 };
 
 export const serve = (tenant, ticketId: number, roomId: number): Promise<Ticket> => {
+    // TODO: attempt to get rid of the room query. Either encapsulate it like getQueueById or
+    // try to get rid of it altogether and rely on the foreign key constraint to make it lighter
     return Room.query().context({ tenant })
         .where('id', roomId)
         .first()
@@ -72,12 +111,19 @@ export const serve = (tenant, ticketId: number, roomId: number): Promise<Ticket>
                 .then((ticket: Ticket) => {
                     return ticket.$query()
                         .context({ tenant })
-                        .patchAndFetch({ served: true, serving_room: room.id });
+                        .patchAndFetch({ served: true, serving_room: room.id })
+                        .then(() => {
+                            const event = new TicketServedEvent(tenant, ticket);
+                            Bus.emit(event);
+                            return ticket;
+                        });
                 });
         });
 };
 
 export const serveNext = (tenant, roomId: number): Promise<Ticket> => {
+    // TODO: attempt to get rid of the Room query. Either encapsulate it like getQueueById or
+    // try to get rid of it altogether and rely on the foreign key constraint to make it lighter
     return Room.query().context({ tenant })
         .where('id', roomId)
         .first()
@@ -105,7 +151,12 @@ export const serveNext = (tenant, roomId: number): Promise<Ticket> => {
                 .then((ticket: Ticket) => {
                     return ticket.$query()
                         .context({ tenant })
-                        .patchAndFetch({ served: true, serving_room: room.id });
+                        .patchAndFetch({ served: true, serving_room: room.id })
+                        .then(() => {
+                            const event = new TicketServedEvent(tenant, ticket);
+                            Bus.emit(event);
+                            return ticket;
+                        });
                 });
         });
 };

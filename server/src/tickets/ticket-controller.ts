@@ -92,7 +92,7 @@ export const remove: Function = (req: Request, res: Response, next: any) => {
     });
 
     return removeTicket(req.locals.tenant, req.params.ticket)
-        .then((removed: number) => res.json({ removed })) // TODO: consider: error on not removed?
+        .then((ticket: Ticket) => res.json({ ticket }))
         .catch(next);
 };
 

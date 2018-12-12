@@ -8,6 +8,8 @@ const bodyParser = require('body-parser');
 const Joi = require('joi');
 const errors = require('common-errors');
 
+const Bus = require('./bus');
+
 require('./database');
 
 // const mongo = require('./mongo');
@@ -26,7 +28,6 @@ app.use(bodyParser.json()); // support json encoded bodies
 app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 
 // This is only temporary
-// Each client will have his own schema
 app.use((req, res, next) => {
     req.locals = {
         user: 'temporary-user-until-we-have-auth',
@@ -59,6 +60,13 @@ app.use(errors.middleware.crashProtector());
 
 app.use('/', router);
 app.use(errorHandler);
+
+Bus.registerBusEventHandlers(
+    Bus.default,
+    [
+        require('./tickets/ticket-event-handler').default,
+    ]
+);
 
 app.listen(port, () => {
     console.log(`App listening on port ${port}!`);

@@ -23,6 +23,7 @@
     "body-parser": "^1.18.3",
     "common-errors": "^1.0.5",
     "db-errors": "^0.1.0",
+    "eventemitter2": "^5.0.1",
     "express": "^4.16.3",
     "joi": "^13.6.0",
     "knex": "^0.15.2",

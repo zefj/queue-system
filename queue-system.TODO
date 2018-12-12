@@ -34,6 +34,7 @@ Ustawienia:
     ☐ Jedna kolejka - jeden pokoj
     ☐ Jedna kolejka - wiele pokoi
   ☐ Notyfikacje (brak, mail, sms), informacja o obsludze bliskiego numeru
+    Proba powiadomienia jest podejmowana zawsze, ale jesli nie ma maila to sie nic nie dzieje. Dzieki temu maila nie trzeba podawac od razu podczas tworzenia biletu
   ☐ Sposob wyliczania orientacyjnej godziny wizyty - teoria kolejek, sztywny czas obslugi, typy wizyt
   ☐ Numeracja:
     ☐ [0-9]{1-N}
@@ -45,10 +46,14 @@ Ustawienia:
     ☐ Reczne wpisywanie - wygodny formularz, obsluga klawiatura itp.
     ☐ API
     ☐ Opcjonalne w przypadku wykorzystywania systemu "stacjonarnego"
+
+Access control:
+  ☐ https://github.com/onury/accesscontrol
+  
 Interfejs (todo):
 ☐ Panel glowny - tworzenie kolejek, tworzenie pokoi, dodawanie biletow
 ☐ Panel pokoju - obsluga biletow (zawolaj nastepnego, obsluga danego biletu)
-☐ Uprawnienia do pokoi
+☐ Uprawnienia do pokoi (? wodotrysk)
 ☐ Strona ze ogolnym stanem kolejki, do wyswietlenia np. na monitorze (jak w urzedach)
 ☐ Strony dla pokoi, cos w stylu monitorow przy kasach w decathlonie
 ☐ Pobor biletow - TODO

@@ -4,6 +4,12 @@ const errors = require('common-errors');
 import Room from './room-model';
 import Queue from '../queues/queue-model';
 
+import Bus from '../bus';
+
+import {
+    RoomCreatedEvent,
+} from './events';
+
 import { getQueueById } from '../queues/queue-actions';
 
 export const create = (tenant, queueId: number, name: string): Promise<Room> => {
@@ -29,6 +35,12 @@ export const create = (tenant, queueId: number, name: string): Promise<Room> => 
                     }
 
                     throw error;
+                })
+                .then((room: Room) => {
+                    // TODO; consider if this event is needed
+                    const event = new RoomCreatedEvent(tenant, room);
+                    Bus.emit(event);
+                    return room;
                 });
         });
 };
