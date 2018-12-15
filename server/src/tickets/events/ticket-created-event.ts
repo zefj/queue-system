@@ -10,6 +10,7 @@ class TicketCreatedEvent extends TicketEvent {
     getEvent() {
         return {
             name: TicketCreatedEvent.eventName,
+            tenant: this.tenant,
             ticket: this.ticket,
         };
     }
