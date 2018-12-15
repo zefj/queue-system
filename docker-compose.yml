@@ -11,3 +11,14 @@ services:
       MYSQL_PASSWORD: password
       MYSQL_DATABASE: queue_db
       MYSQL_ROOT_PASSWORD: qwerty
+#  rabbitmq:
+#    image: rabbitmq
+#    restart: always
+#    ports:
+#      - "5672:5672"
+  rabbitmq-management:
+    image: rabbitmq:management
+    restart: always
+    ports:
+      - "5672:5672"
+      - "15672:15672"

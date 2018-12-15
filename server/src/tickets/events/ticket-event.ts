@@ -1,4 +1,4 @@
-import { EventInterface } from '../../bus/interface';
+import { EventInterface } from '../../bus/types';
 import Ticket from '../ticket-model';
 
 abstract class TicketEvent implements EventInterface {

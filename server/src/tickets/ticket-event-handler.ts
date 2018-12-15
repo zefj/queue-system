@@ -1,4 +1,4 @@
-import { BusInterface } from '../bus/interface';
+import { BusInterface } from '../bus/types';
 
 import * as events from './events';
 

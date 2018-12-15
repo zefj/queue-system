@@ -1,4 +1,4 @@
-import { EventInterface } from '../../bus/interface';
+import { EventInterface } from '../../bus/types';
 import Room from '../room-model';
 
 abstract class RoomEvent implements EventInterface {

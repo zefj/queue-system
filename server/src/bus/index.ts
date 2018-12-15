@@ -1,4 +1,4 @@
-import { BusInterface, EventInterface } from './interface';
+import { BusInterface, EventInterface } from './types';
 import { EventEmitter2 } from 'eventemitter2';
 
 export class Bus implements BusInterface {
