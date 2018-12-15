@@ -2,8 +2,11 @@
   "compilerOptions": {
     "module": "commonjs",
     "strict": true,
+    "noImplicitReturns": true,
+    "forceConsistentCasingInFileNames": true,
+    "noUnusedLocals": true,
     "declaration": true,
-    "noImplicitAny": false,
+    "noImplicitAny": false, // TODO: flip it to true at some point
     "removeComments": true,
     "noLib": false,
     "allowSyntheticDefaultImports": true,

@@ -35,7 +35,7 @@ const incrementIdentifier = (identifier, mask = /(.*)/g, incrementGroup = 0): st
 
     const incrementedNumber = (intNumber + 1).toString();
 
-    match[match.indexOf(number)] = _.padStart(incrementedNumber, number.length, 0);
+    match[match.indexOf(number)] = _.padStart(incrementedNumber, number.length, '0');
     const result = match.join('');
 
     if (!identifierValid(result, mask)) {

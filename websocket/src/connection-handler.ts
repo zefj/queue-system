@@ -24,10 +24,10 @@ class ConnectionHandler extends EventEmitter2 {
         return !_.isEmpty(this.listeners(`*.${connection.id}.*`));
     }
 
-    registerConnection(message, connection: WebSocketExtended) {
+    registerConnection(message, connection: WebSocketExtended): boolean {
         if (this.isRegistered(connection)) {
             console.log(`[${connection.id}] Already authorized and registered`);
-            return null;
+            return false;
         }
 
         this.authorizeConnection(message.token, connection);
@@ -38,11 +38,13 @@ class ConnectionHandler extends EventEmitter2 {
         message.scopes = ['tickets'];
 
         this.registerScopes(message.scopes, connection);
+        return true;
     }
 
-    unregisterConnection(connection: WebSocketExtended) {
+    unregisterConnection(connection: WebSocketExtended): boolean {
         console.log(`[${connection.id}] Removing ${this.listeners(`*.${connection.id}.*`).length} listeners...`);
         this.removeAllListeners(`*.${connection.id}.*`);
+        return true;
     }
 
     // TODO

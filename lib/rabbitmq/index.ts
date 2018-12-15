@@ -1,13 +1,13 @@
 import * as amqp from 'amqplib';
 
-let connection;
+// let connection;
 let channel;
 
 // nice reference: http://blog.thedigitalcatonline.com/blog/2013/08/21/some-tips-about-amqp-direct-exchanges/
 export const setup = (hostname) => {
     return amqp.connect(`amqp://${hostname}`)
         .then((conn) => {
-            connection = conn;
+            // connection = conn;
             return conn.createChannel()
                 .then((ch) => {
                     channel = ch;
