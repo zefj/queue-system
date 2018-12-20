@@ -45,8 +45,8 @@ const registerKnexDebugUtils = (knex) => {
 
         // I print the sql generated for a given query, as well as
         // the bindings for the queries.
-        console.log(`[#${position}] ${query.sql} | [${query.bindings ? query.bindings.join(', ') : ''}]`);
-        console.log(`Time: ${elapsedTime.toFixed(3)} ms\n`);
+        logger.debug(`[#${position}] ${query.sql} | [${query.bindings ? query.bindings.join(', ') : ''}]`);
+        logger.debug(`Time: ${elapsedTime.toFixed(3)} ms\n`);
 
         // After I print out the query, I have no more use to it,
         // so I delete it from my map so it doesn't grow out of control.

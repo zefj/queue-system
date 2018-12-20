@@ -9,7 +9,9 @@ import ConnectionHandler from './connection-handler';
 // Types
 import { WebSocketExtended } from './types';
 
-console.log(`Starting websocket server at port ${config.port}...`);
+import './logger';
+
+logger.info(`Starting websocket server at port ${config.port}...`);
 
 // TODO: https
 const handler = new ConnectionHandler();
@@ -24,7 +26,7 @@ const startServer = () => {
         ws.id = uuid();
 
         // @ts-ignore
-        console.log(`[${ws.id}] Client connected`);
+        logger.debug(`[${ws.id}] Client connected`);
 
         ws.on('message', (data) => {
             const message = parseMessage(data);
@@ -48,7 +50,7 @@ const startServer = () => {
 
 const connectToBroker = () => {
     rabbitmq.consumeBus(config.hostname, (message) => {
-        console.log(`Got event from queue: ${message.content}`);
+        logger.debug(`Got event from queue: ${message.content}`);
         const content = JSON.parse(message.content);
 
         if (!content.tenant) {

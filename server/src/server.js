@@ -1,3 +1,6 @@
+require('./logger');
+const config = require('./config').default;
+
 const makeServer = () => {
     const express = require('express');
     const router = require('./router');
@@ -10,7 +13,7 @@ const makeServer = () => {
     const allowCrossDomain = require('./middlewares/allow-cross-domain');
     const errorHandler = require('./middlewares/error-handler');
 
-    console.log(`Starting server in ${process.env.NODE_ENV } mode...`);
+    logger.info(`Starting server in ${config.environment } mode...`);
 
     const app = express();
     rabbitmq.setup(config.rabbitmq.host);
@@ -59,11 +62,9 @@ const makeServer = () => {
     );
 
     app.listen(config.app.port, () => {
-        console.log(`App listening on port ${config.app.port}!`);
+        logger.info(`App listening on port ${config.app.port}!`);
     });
 };
-
-const config = require('./config').default;
 
 if (config.environment !== 'production') {
     makeServer();
@@ -74,7 +75,7 @@ if (config.environment !== 'production') {
         cluster.fork();
         cluster.fork();
     } else if (cluster.isWorker) {
-        console.log(`Spawned worker ${config.app.hostname}`);
+        logger.info(`Spawned worker ${config.app.hostname}`);
         makeServer();
     }
 }

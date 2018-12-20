@@ -28,7 +28,6 @@ export const create: Function = (req: Request, res: Response, next: any) => {
 };
 
 // export const createMany: Function = (req: Request, res: Response, next: any) => {
-//     console.log(typeof req.body.tickets, req.body.tickets);
 //     const schema = joi.object().keys({
 //         params: {
 //             queue: joi.string().alphanum().max(32).required(),

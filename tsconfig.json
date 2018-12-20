@@ -24,6 +24,8 @@
     "inlineSourceMap": true,
 //    "outDir": "./dist",
     "baseUrl": ".",
-    "typeRoots" : ["node_modules/@types", "./server/src/interfaces"]
+    "typeRoots" : [
+      "node_modules/@types"
+    ]
   }
 }

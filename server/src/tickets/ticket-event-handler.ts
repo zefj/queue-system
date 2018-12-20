@@ -5,21 +5,21 @@ import * as events from './events';
 
 const register = (bus: BusInterface): void => {
     bus.on(events.TicketCreatedEvent.eventName, (event, ...args) => {
-        console.log(`Received event: ${JSON.stringify(event)}, args: ${args}`);
+        logger.debug(`Received event: ${JSON.stringify(event)}, args: ${args}`);
         publishToBus(event);
-        // console.log(`Got event: ${this.event.getName()}, ${JSON.stringify(this.event.getEvent())}`);
+        // logger.debug(`Got event: ${this.event.getName()}, ${JSON.stringify(this.event.getEvent())}`);
     });
 
     bus.on(events.TicketRemovedEvent.eventName, (event, ...args) => {
-        console.log(`Received event: ${JSON.stringify(event)}, args: ${args}`);
+        logger.debug(`Received event: ${JSON.stringify(event)}, args: ${args}`);
         publishToBus(event);
-        // console.log(`Got event: ${this.event.getName()}, ${JSON.stringify(this.event.getEvent())}`);
+        // logger.debug(`Got event: ${this.event.getName()}, ${JSON.stringify(this.event.getEvent())}`);
     });
 
     bus.on(events.TicketServedEvent.eventName, (event, ...args) => {
-        console.log(`Received event: ${JSON.stringify(event)}, args: ${args}`);
+        logger.debug(`Received event: ${JSON.stringify(event)}, args: ${args}`);
         publishToBus(event);
-        // console.log(`Got event: ${this.event.getName()}, ${JSON.stringify(this.event.getEvent())}`);
+        // logger.debug(`Got event: ${this.event.getName()}, ${JSON.stringify(this.event.getEvent())}`);
     });
 };
 

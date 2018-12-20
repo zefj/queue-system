@@ -15,6 +15,7 @@ const generateHostname = (hostname = 'host') => {
 const config = {
     development: {
         environment: process.env.NODE_ENV,
+        debug: true,
         app: {
             hostname: generateHostname('devhost'),
             port: process.env.PORT || 3000,
