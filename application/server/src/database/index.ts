@@ -10,7 +10,7 @@ export {
     TimestampsMixin,
 };
 
-import registerKnexDebugUtils from './registerKnexDebugUtils';
+import registerKnexDebugUtils from './register-knex-debug-utils';
 
 const config = require('../../knex-config');
 

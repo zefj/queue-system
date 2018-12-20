@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "module": "commonjs",
+    "moduleResolution": "node",
     "strict": true,
     "noImplicitReturns": true,
     "forceConsistentCasingInFileNames": true,
@@ -21,8 +22,7 @@
       "es2018",
       "esnext"
     ],
-    "inlineSourceMap": true,
-//    "outDir": "./dist",
+    "sourceMap": true,
     "baseUrl": ".",
     "typeRoots" : [
       "node_modules/@types"
