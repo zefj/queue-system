@@ -37,18 +37,31 @@ export default class TenantModel extends BaseModel {
 
         this.tenant = queryContext.tenant;
     }
-}
 
-// export default class TenantModel extends BaseModel {
-//     static QueryBuilder = TenantedQueryBuilder;
-//
-//     tenant!: string;
-//
-//     $beforeInsert() {
-//         this.tenant = 'queue_db';
-//     }
-//
-//     $beforeUpdate() {
-//         this.tenant = 'queue_db';
-//     }
-// }
+    static _relationMappings: {};
+
+    static get relationMappings() {
+        return this._relationMappings;
+    }
+
+    // TenantModel implements a relation to the `tenants` table. This magic merges the relationMappings
+    // definition of the base class with a base mapping of TenantModel class. This further accomplishes
+    // a very important thing - child classes only need to extend the TenantModel to support row-level tenancy.
+    // Disclaimer: I have tested it, but have no thorough understanding of why this works. Please be advised.
+    static set relationMappings(mappings) {
+        this._relationMappings = Object.assign(
+            {},
+            {
+                tenants: {
+                    relation: Model.BelongsToOneRelation,
+                    modelClass: `${__dirname}/../tenants/tenant-model.ts`,
+                    join: {
+                        from: `${this.tableName}.tenant`,
+                        to: 'tenants.id',
+                    },
+                },
+            },
+            mappings,
+        );
+    }
+}

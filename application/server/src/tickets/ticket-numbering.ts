@@ -12,6 +12,8 @@ export const identifierValid = (number, mask) => {
 /**
  * Attempts to increment a complex identifier, based on a regex expression.
  * The regex expression MUST have all the components enclosed in groups.
+ * TODO: identifier roll-up, eg. 99-1 -> 01-2
+ * TODO: refactor this into autonomous modules, with one increment type per module
  * @param {string} identifier
  * @param {regex} mask
  * @param {number | null} incrementGroup Match group to increment, counting from 0. Eg: for identifier AB001D and regex

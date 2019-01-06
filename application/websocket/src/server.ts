@@ -21,6 +21,7 @@ const startServer = () => {
         port: config.port,
     });
 
+    // TODO: implement auth
     wss.on('connection', (ws: WebSocketExtended) => {
         // @ts-ignore
         ws.id = uuid();

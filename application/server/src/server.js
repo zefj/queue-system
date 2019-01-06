@@ -26,7 +26,8 @@ const makeServer = () => {
     app.use((req, res, next) => {
         req.locals = {
             user: 'temporary-user-until-we-have-auth',
-            tenant: 'queue_db',
+            // TODO while developing make sure this tenant exists in the DB
+            tenant: '2c7783c2-53ee-48ba-bb5c-cd1f1da6ac7b',
         };
 
         next();
