@@ -4,5 +4,5 @@
     "lib"
   ],
   "ext": "js,ts",
-  "exec": "TS_NODE_FILES=true node -r ts-node/register -r tsconfig-paths/register --inspect=0.0.0.0:9230 ./websocket/src/server.ts"
+  "exec": "TS_NODE_FILES=true node -r ts-node/register ./websocket/src/server.ts"
 }

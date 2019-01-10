@@ -5,7 +5,21 @@ const room = require('./rooms/room-controller');
 
 const mainRouter = new Router();
 
-mainRouter.get('/queue/get', queue.getAll);
+const oauth2 = require('./auth/server').default;
+const auth = require('./auth/auth').default;
+
+auth.registerAuthStrategies();
+oauth2.registerAuthGrantsAndExchanges();
+
+mainRouter.post('/auth/user/authorize', (req, res, next) => {
+    req.body.grant_type = 'password';
+    next();
+}, oauth2.middleware);
+
+mainRouter.get('/queue/get', [
+    auth.userAuthWall,
+    queue.getAll
+]);
 mainRouter.post('/queue/create', queue.create);
 mainRouter.post('/queue/:queue/remove', queue.remove);
 

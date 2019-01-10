@@ -4,5 +4,5 @@
     "lib"
   ],
   "ext": "js,ts",
-  "exec": "TS_NODE_FILES=true node -r ts-node/register -r tsconfig-paths/register --inspect=0.0.0.0:9229 ./server/src/server.js"
+  "exec": "TS_NODE_FILES=true node -r ts-node/register ./server/src/server.js"
 }

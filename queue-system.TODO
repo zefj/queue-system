@@ -49,7 +49,7 @@ Ustawienia:
 
 Access control:
   ☐ https://github.com/onury/accesscontrol
-  
+
 Interfejs (todo):
 ☐ Panel glowny - tworzenie kolejek, tworzenie pokoi, dodawanie biletow
 ☐ Panel pokoju - obsluga biletow (zawolaj nastepnego, obsluga danego biletu)
@@ -84,8 +84,4 @@ Technikalia:
 Generate new migration:
 node ./node_modules/knex/bin/cli.js migrate:make --knexfile="knex-config.js" ${TABLE_NAME}
 Run migrations:
-./node_modules/knex/bin/cli.js migrate:latest --knexfile="knex-config.js"
-
-
-TODO 24-25.11:
-  ✔ generateTicketNumber - funkcja generujaca numer biletu na podstawie ustawienia numeracji @done(18-11-24 23:39)
+vagrant@queue:/project/application/server$ ../node_modules/knex/bin/cli.js migrate:latest --knexfile="knex-config.js"

@@ -9,6 +9,7 @@ const makeServer = () => {
     const errors = require('common-errors');
     const Bus = require('./bus');
     require('./database');
+
     const rabbitmq = require('../../lib/rabbitmq');
     const allowCrossDomain = require('./middlewares/allow-cross-domain');
     const errorHandler = require('./middlewares/error-handler');
@@ -25,18 +26,17 @@ const makeServer = () => {
     // This is only temporary
     app.use((req, res, next) => {
         req.locals = {
-            user: 'temporary-user-until-we-have-auth',
             // TODO while developing make sure this tenant exists in the DB
-            tenant: '2c7783c2-53ee-48ba-bb5c-cd1f1da6ac7b',
+            tenant: '4a4c885b-51cc-4485-a51a-8a1d92825454',
         };
 
         next();
     });
 
+    // This too is only temporary
     app.use((req, res, next) => {
         const schema = Joi.object().keys({
             locals: Joi.object().keys({
-                user: Joi.string().required(),
                 tenant: Joi.string().required(),
             }),
         }).unknown();

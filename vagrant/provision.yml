@@ -52,6 +52,11 @@
         name: yarn
         state: present
 
+    # this is required for node-argon2, we use that for password and token hashing
+    # note: when production-ready, this should only be present at compile time
+    - name: Install "node-gyp" node.js package globally.
+      command: yarn global add node-gyp
+
     - name: Run the service defined in docker-compose.yml
       docker_service:
         project_src: .

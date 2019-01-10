@@ -12,7 +12,7 @@ Vagrant.configure("2") do |config|
   end
 
   config.vm.provision "ansible_local" do |ansible|
-    ansible.version = "2.5.11"
+    ansible.version = "2.7.5"
     ansible.install_mode = "pip"
     ansible.provisioning_path = "/project"
     ansible.galaxy_role_file = "vagrant/ansible-requirements.yml"
