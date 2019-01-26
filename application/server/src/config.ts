@@ -1,6 +1,6 @@
 const cluster = require('cluster');
-import { makeConfig } from '../../lib/config';
-import rabbitmqConfig from '../../lib/rabbitmq/config';
+import { makeConfig } from './lib/config';
+import rabbitmqConfig from './lib/rabbitmq/config';
 
 const generateHostname = (hostname = 'host') => {
     if (cluster.isMaster) {

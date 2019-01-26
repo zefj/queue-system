@@ -10,7 +10,7 @@ const makeServer = () => {
     const Bus = require('./bus');
     require('./database');
 
-    const rabbitmq = require('../../lib/rabbitmq');
+    const rabbitmq = require('./lib/rabbitmq');
     const allowCrossDomain = require('./middlewares/allow-cross-domain');
     const errorHandler = require('./middlewares/error-handler');
 

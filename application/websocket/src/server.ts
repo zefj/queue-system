@@ -1,6 +1,6 @@
 import * as ws from 'ws';
 import config from './config';
-import * as rabbitmq from '../../lib/rabbitmq';
+import * as rabbitmq from './lib/rabbitmq';
 import { parseMessage } from './parse-message';
 
 import * as uuid from 'uuid/v4';

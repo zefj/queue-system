@@ -1,5 +1,5 @@
 import { BusInterface } from '../bus/types';
-import { publishToBus } from '../../../lib/rabbitmq';
+import { publishToBus } from '../lib/rabbitmq';
 
 import * as events from './events';
 

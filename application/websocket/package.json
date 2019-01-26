@@ -1,0 +1,37 @@
+{
+  "name": "websocket",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "COMMERCIAL",
+  "author": "Filip Rec <filiprec@outlook.com>",
+  "private": true,
+  "dependencies": {
+    "amqplib": "^0.5.3",
+    "lodash": "^4.17.10",
+    "ws": "^6.1.2",
+    "winston": "^3.1.0",
+    "eventemitter2": "^5.0.1",
+    "common-errors": "^1.0.5",
+    "uuid": "^3.3.2"
+  },
+  "devDependencies": {
+    "@types/lodash": "^4.14.119",
+    "@types/mocha": "^5.2.5",
+    "@types/node": "^10.9.3",
+    "@types/ws": "^6.0.1",
+    "chai": "^4.2.0",
+    "mocha": "^5.2.0",
+    "nodemon": "^1.18.3",
+    "ts-node": "^7.0.1",
+    "tsconfig-paths": "^3.6.0",
+    "tslint": "^5.11.0",
+    "tslint-config-airbnb": "^5.11.0",
+    "typescript": "^3.0.1"
+  },
+  "scripts": {
+    "develop": "NODE_ENV=development node_modules/nodemon/bin/nodemon.js -L --config nodemon-config.json",
+    "develop:inspect": "NODE_ENV=development node_modules/nodemon/bin/nodemon.js -L --config nodemon-config.json --exec 'TS_NODE_FILES=true node -r ts-node/register --inspect=0.0.0.0:9230 ./src/server.ts'",
+    "test": "NODE_ENV=test node node_modules/mocha/bin/mocha --opts mocha.opts",
+    "lint": "node_modules/tslint/bin/tslint -c tslint.js 'src/**/*.ts'"
+  }
+}
