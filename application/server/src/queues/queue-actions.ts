@@ -17,7 +17,7 @@ export const getQueueById = (tenant, id: number): Promise<Queue> => {
 };
 
 export const create = (tenant: string, name: string): Promise<Queue> => {
-    const schema = joi.string().max(32).required(); // TODO: allow more than alphanum
+    const schema = joi.string().max(32).required();
 
     joi.validate(name, schema, (error: Error) => {
         if (!error) {

@@ -8,6 +8,8 @@ const mainRouter = new Router();
 const oauth2 = require('./auth/server').default;
 const auth = require('./auth/auth').default;
 
+const config = require('./config').default;
+
 auth.registerAuthStrategies();
 oauth2.registerAuthGrantsAndExchanges();
 
@@ -33,5 +35,19 @@ mainRouter.post('/room/:room/ticket/:ticket/serve', ticket.serve);
 mainRouter.post('/queue/:queue/ticket/create', ticket.create);
 // mainRouter.post('/queue/:queue/ticket/createMany', ticket.createMany);
 mainRouter.post('/ticket/:ticket/remove', ticket.remove);
+
+if (config.debug) {
+    const swaggerUi = require('swagger-ui-express');
+    const YAML = require('yamljs');
+
+    mainRouter.get('/swagger/definitions', (req, res, next) => {
+        const swaggerDocument = YAML.load(__dirname + '/swagger-definitions.yml');
+        res.send(swaggerDocument);
+        next();
+    });
+
+    mainRouter.use('/swagger', swaggerUi.serve);
+    mainRouter.get('/swagger', swaggerUi.setup(null, { swaggerUrl: '/swagger/definitions' }));
+}
 
 module.exports = mainRouter;
