@@ -7,7 +7,10 @@ module.exports = {
     rules: {
         'ter-indent': [
             true,
-            4
+            4,
+            {
+                "SwitchCase": 1
+            }
         ],
         'max-line-length': [
             true,

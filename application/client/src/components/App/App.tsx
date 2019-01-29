@@ -1,22 +1,23 @@
 import React, { Component, ComponentClass } from 'react';
-import { Route, NavLink, withRouter, RouteComponentProps } from 'react-router-dom';
+import { Route, NavLink, withRouter, RouteComponentProps, Redirect } from 'react-router-dom';
 
-import { Home } from '../Home/Home';
+import { ManagePage } from '../ManagePage/ManagePage';
 
 import { Layout, Menu } from 'antd';
 const { Header } = Layout;
 
 export const App = () => ( // tslint:disable-line:variable-name
     <>
-        <Route exact path="/" component={withHeader(Home)}/>
-        <Route exact path="/attend" component={withHeader(Home)}/>
-        <Route exact path="/display" component={Home}/>
+        <Route exact path="/" component={() => <Redirect to={'/manage'} />}/>
+        <Route path="/manage" component={withHeader(ManagePage)}/>
+        <Route path="/attend" component={withHeader(ManagePage)}/>
+        <Route path="/display" component={ManagePage}/>
     </>
 );
 
 const withHeader = (Component: ComponentClass) => { // tslint:disable-line:variable-name
     return withRouter(props => <HeaderWrapper {...props} ><Component /></HeaderWrapper>);
-}; // tslint:disable-line:variable-name
+};
 
 class HeaderWrapper extends Component<RouteComponentProps, {}> {
     render() {
@@ -27,11 +28,11 @@ class HeaderWrapper extends Component<RouteComponentProps, {}> {
                     <Menu
                         theme="dark"
                         mode="horizontal"
-                        selectedKeys={[`menu-item-${this.props.location.pathname}`]}
+                        selectedKeys={[`menu-item-${this.props.match.url}`]}
                         style={{ lineHeight: '64px' }}
                     >
-                        <Menu.Item key="menu-item-/">
-                            <NavLink to="/">Manage</NavLink>
+                        <Menu.Item key="menu-item-/manage">
+                            <NavLink to="/manage">Manage</NavLink>
                         </Menu.Item>
                         <Menu.Item key="menu-item-/attend">
                             <NavLink to="/attend">Attend</NavLink>

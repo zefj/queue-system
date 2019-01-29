@@ -6,10 +6,15 @@ import { App } from './components/App/App';
 import './index.scss';
 import * as serviceWorker from './serviceWorker';
 
+import { Provider } from 'react-redux';
+import { store } from './store';
+
 ReactDOM.render(
-    <BrowserRouter>
-        <App />
-    </BrowserRouter>,
+    <Provider store={store}>
+        <BrowserRouter>
+            <App />
+        </BrowserRouter>
+    </Provider>,
     document.getElementById('root'),
 );
 

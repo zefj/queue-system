@@ -19,7 +19,7 @@ mainRouter.post('/auth/user/authorize', (req, res, next) => {
 }, oauth2.middleware);
 
 mainRouter.get('/queue/get', [
-    auth.userAuthWall,
+    // auth.userAuthWall, // TODO: temporarily disabled
     queue.getAll
 ]);
 mainRouter.post('/queue/create', queue.create);
@@ -39,7 +39,6 @@ mainRouter.post('/ticket/:ticket/remove', ticket.remove);
 if (config.debug) {
     const swaggerUi = require('swagger-ui-express');
     const YAML = require('yamljs');
-
     mainRouter.get('/swagger/definitions', (req, res, next) => {
         const swaggerDocument = YAML.load(__dirname + '/swagger-definitions.yml');
         res.send(swaggerDocument);
@@ -48,6 +47,16 @@ if (config.debug) {
 
     mainRouter.use('/swagger', swaggerUi.serve);
     mainRouter.get('/swagger', swaggerUi.setup(null, { swaggerUrl: '/swagger/definitions' }));
+}
+
+if (config.environment === 'production') {
+    const YAML = require('yamljs');
+    const swaggerDocument = YAML.load(__dirname + '/swagger-definitions.yml');
+
+    mainRouter.get('/swagger/definitions', (req, res, next) => {
+        res.send(swaggerDocument);
+        next();
+    });
 }
 
 module.exports = mainRouter;
