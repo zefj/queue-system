@@ -21,8 +21,8 @@ export const status = (
     return state;
 };
 
-export const getActionStatus = (state: RootState, actionType: StatusActionTypes) => {
-    return state.status[actionType];
+export const getActionStatus = (state: RootState, actionType: StatusActionTypes): StatusActionPayload => {
+    return state.status[actionType] || { status: null };
 };
 
 export const inProgress = (state: RootState, actionType: StatusActionTypes) => {

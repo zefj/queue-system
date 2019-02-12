@@ -7,7 +7,7 @@ const initializeClient = () => {
         .then((swaggerClient: any) => {
             client = swaggerClient;
             return client;
-        });
+        }); // TODO: catch definition failed to fetch and display global error
 };
 
 export const getClient = (): Promise<{}> => {

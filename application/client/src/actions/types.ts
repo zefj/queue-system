@@ -10,3 +10,18 @@ export interface QueueInterface {
 }
 
 export type Actions = QueuesActions | StatusActions;
+
+export interface ServerException {
+    message: string;
+    type: string;
+    stack?: string;
+    description?: ValidationErrorDescription;
+}
+
+export interface ValidationErrorDescription {
+    [name: string]: {
+        key: string,
+        type: string,
+        message: string,
+    };
+}

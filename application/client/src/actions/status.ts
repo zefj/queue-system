@@ -1,15 +1,17 @@
 import { Action } from 'redux';
+import { ServerException } from './types';
 
 export enum StatusActionTypes {
     FETCH_QUEUES = 'FETCH_QUEUES',
     FETCH_ROOMS = 'FETCH_ROOMS',
+    CREATE_QUEUE = 'CREATE_QUEUE',
 }
 
 export type ActionStatus = null | 'started' | 'finished' | 'errored';
 
 export type StatusActionPayload = {
     status: ActionStatus,
-    error?: {},
+    error?: ServerException | string,
 };
 
 interface StatusAction extends Action {
@@ -42,13 +44,17 @@ export interface FetchRoomsStatus extends StatusAction {
     // type: 'FETCH_ROOMS';
     type: StatusActionTypes.FETCH_ROOMS;
 }
+export interface CreateQueueStatus extends StatusAction {
+    // type: 'FETCH_ROOMS';
+    type: StatusActionTypes.CREATE_QUEUE;
+}
 
-export type StatusActions = FetchQueuesStatus | FetchRoomsStatus;
+export type StatusActions = FetchQueuesStatus | FetchRoomsStatus | CreateQueueStatus;
 
 export const setActionStatus = (
     actionType: StatusActions['type'],
     status: ActionStatus,
-    error?: {},
+    error?: ServerException | string,
 ): StatusActions => {
     const payload: StatusActionPayload = { status };
 

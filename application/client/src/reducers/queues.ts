@@ -25,4 +25,4 @@ export const queues = (
     }
 };
 
-export const getQueues = (state: RootState) => state.queues.data;
+export const getQueues = (state: RootState): QueueInterface[] | null => state.queues.data;
