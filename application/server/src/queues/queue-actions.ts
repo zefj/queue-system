@@ -1,3 +1,5 @@
+import { validationInvariant } from '../utils/joi-validation';
+
 const joi = require('joi');
 const errors = require('common-errors');
 
@@ -17,15 +19,11 @@ export const getQueueById = (tenant, id: number): Promise<Queue> => {
 };
 
 export const create = (tenant: string, name: string): Promise<Queue> => {
-    const schema = joi.string().max(32).required();
-
-    joi.validate(name, schema, (error: Error) => {
-        if (!error) {
-            return;
-        }
-
-        throw new errors.ValidationError(error.message);
+    const schema = joi.object().keys({
+        name: joi.string().max(32).required().label('Name'),
     });
+
+    validationInvariant({ name }, schema);
 
     return Queue.query().context({ tenant })
         .insert({ name });

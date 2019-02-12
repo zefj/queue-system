@@ -24,12 +24,18 @@ const errorHandler = (err, req, res, next) => {
         console.error(err.stack);
     }
 
-    /* Finally respond to the request */
-    res.status(err.status_code || 500).json({
+    const responseJson = {
         type: err.constructor.name,
         message: err.message,
         stack: err.stack || null,
-    });
+    };
+
+    if (err.description) {
+        responseJson.description = err.description;
+    }
+
+    /* Finally respond to the request */
+    res.status(err.status_code || 500).json(responseJson);
 };
 
 module.exports = errorHandler;

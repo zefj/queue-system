@@ -36,6 +36,12 @@
   version "4.1.7"
   resolved "https://registry.yarnpkg.com/@types/chai/-/chai-4.1.7.tgz#1b8e33b61a8c09cbe1f85133071baa0dbf9fa71a"
 
+"@types/common-errors@^1.0.1":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@types/common-errors/-/common-errors-1.0.1.tgz#5a22d59bd7ed8a917489b781520b64bd054f46c5"
+  dependencies:
+    "@types/express" "*"
+
 "@types/connect@*":
   version "3.4.32"
   resolved "https://registry.yarnpkg.com/@types/connect/-/connect-3.4.32.tgz#aa0e9616b9435ccad02bc52b5b454ffc2c70ba28"

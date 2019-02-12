@@ -4,6 +4,7 @@
   "author": "Filip Rec <filiprec@outlook.com>",
   "devDependencies": {
     "@types/chai": "^4.1.7",
+    "@types/common-errors": "^1.0.1",
     "@types/express": "^4.16.0",
     "@types/joi": "^13.4.4",
     "@types/jsonwebtoken": "^8.3.0",
