@@ -30,6 +30,10 @@ export const create = (tenant: string, name: string): Promise<Queue> => {
 };
 
 export const remove = (tenant: string, queueId: number): Promise<number> => {
+    // TODO: add some validation and removal constraints
+    // possible constraints:
+    // - existing rooms
+    // - unserved tickets
     return Queue.query().context({ tenant })
         .deleteById(queueId);
 };

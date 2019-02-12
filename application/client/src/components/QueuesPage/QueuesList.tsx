@@ -5,7 +5,7 @@ import * as _ from 'lodash';
 import { Button, Empty, Skeleton, Table, Divider, Row, Col } from 'antd';
 
 import { connect } from 'react-redux';
-import { createQueue, fetchQueues } from '../../actions/queues';
+import { createQueue, fetchQueues, removeQueue } from '../../actions/queues';
 import { RootState } from '../../reducers/root';
 import { QueueInterface } from '../../actions/types';
 import { getQueues } from '../../reducers/queues';
@@ -15,13 +15,14 @@ import { StatusActionPayload, StatusActionTypes } from '../../actions/status';
 import { ServerErrorEmpty } from '../ErrorComponents/ServerErrorEmpty';
 
 import { NewQueueFormFields, NewQueueForm } from './NewQueueForm';
-import { Promise } from 'q';
 
 type Props = {
     queues: QueueInterface[] | undefined,
     fetchQueues: () => {},
     createQueue: (fields: NewQueueFormFields) => Promise<any>,
+    removeQueue: (queue: QueueInterface) => Promise<any>,
     fetchStatus: StatusActionPayload,
+    removeStatus: StatusActionPayload,
 };
 
 type State = {
@@ -45,13 +46,13 @@ class QueuesListComponent extends Component<Props, State> {
     }
 
     getContent() {
-        if (this.props.fetchStatus.status === 'errored') {
+        if (this.props.fetchStatus.status === 'failed') {
             return (
                 <ServerErrorEmpty />
             );
         }
 
-        if (this.props.fetchStatus.status === 'started' || this.props.queues === null) {
+        if (this.props.fetchStatus.status === 'started' && this.props.queues === null) {
             return (
                 <Skeleton active/>
             );
@@ -65,6 +66,7 @@ class QueuesListComponent extends Component<Props, State> {
             );
         }
 
+        // TODO: animate row deletion and addition
         return (
             <Table
                 dataSource={this.props.queues}
@@ -84,9 +86,19 @@ class QueuesListComponent extends Component<Props, State> {
                     align="right"
                     key="action"
                     render={(queue: QueueInterface) => {
+                        const { status, additional } = this.props.removeStatus;
+
                         return (
                             <span>
-                                <Button htmlType="button">Delete</Button>
+                                <Button
+                                    htmlType="button"
+                                    icon="delete"
+                                    // TODO: confirm
+                                    loading={(status === 'started' && _.get(additional, 'id') === queue.id)}
+                                    onClick={() => this.props.removeQueue(queue)}
+                                >
+                                    Delete
+                                </Button>
                             </span>
                         );
                     }}
@@ -132,11 +144,13 @@ class QueuesListComponent extends Component<Props, State> {
 const mapStateToProps = (state: RootState) => ({
     queues: getQueues(state) as QueueInterface[] || null,
     fetchStatus: getActionStatus(state, StatusActionTypes.FETCH_QUEUES),
+    removeStatus: getActionStatus(state, StatusActionTypes.REMOVE_QUEUE),
 });
 
 const mapDispatchToProps = (dispatch: ThunkDispatch) => ({
     fetchQueues: () => dispatch(fetchQueues()),
     createQueue: (fields: NewQueueFormFields) => dispatch(createQueue(fields.name)),
+    removeQueue: (queue: QueueInterface) => dispatch(removeQueue(queue)),
 });
 
 // tslint:disable-next-line:variable-name

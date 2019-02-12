@@ -1,6 +1,11 @@
-import { client, getClient } from '../api/client';
+import { getClient } from '../api/client';
 import { QueueInterface } from './types';
-import { setActionStatus, StatusActionTypes } from './status';
+import {
+    actionFailed,
+    actionFinished,
+    actionStarted,
+    StatusActionTypes,
+} from './status';
 import { Action, ActionCreator } from 'redux';
 
 export enum QueuesActionTypes {
@@ -14,13 +19,13 @@ export const fetchQueues = (): ThunkResult<Promise<void>> => {
     return (dispatch) => {
         return getClient()
             .then((client: any) => {
-                dispatch(setActionStatus(StatusActionTypes.FETCH_QUEUES, 'started'));
+                dispatch(actionStarted(StatusActionTypes.FETCH_QUEUES));
 
                 return client.apis.queues.getQueues()
                     .then((response: any) => dispatch(setQueues(response.body.queues)))
-                    .then(() => dispatch(setActionStatus(StatusActionTypes.FETCH_QUEUES, 'finished')));
+                    .then(() => dispatch(actionFinished(StatusActionTypes.FETCH_QUEUES)));
             })
-            .catch(() => dispatch(setActionStatus(StatusActionTypes.FETCH_QUEUES, 'errored')));
+            .catch(() => dispatch(actionFailed(StatusActionTypes.FETCH_QUEUES)));
     };
 };
 
@@ -53,20 +58,45 @@ export const createQueue = (
     return (dispatch) => {
         return getClient()
             .then((client: any) => {
-                dispatch(setActionStatus(StatusActionTypes.CREATE_QUEUE, 'started'));
+                dispatch(actionStarted(StatusActionTypes.CREATE_QUEUE));
 
                 return client.apis.queues.createQueue({}, { requestBody: { name } })
                     .then(() => dispatch(fetchQueues()))
-                    .then(() => dispatch(setActionStatus(StatusActionTypes.CREATE_QUEUE, 'finished')))
+                    .then(() => dispatch(actionFinished(StatusActionTypes.CREATE_QUEUE)))
                     // TODO: build an interface for this
                     .catch(({ message, response }: { message: string, response: any }) => {
-                        dispatch(setActionStatus(
+                        dispatch(actionFailed(
                             StatusActionTypes.CREATE_QUEUE,
-                            'errored',
                             response.body || message,
                         ));
                         return Promise.reject(); // todo: check how we do it at igabinet
                     });
             });
+    };
+};
+
+export const removeQueue = (
+    queue: QueueInterface,
+): ThunkResult<Promise<void>> => {
+    return async (dispatch) => {
+        const client = await getClient();
+
+        // TODO: test this
+        dispatch(actionStarted(
+            StatusActionTypes.REMOVE_QUEUE,
+            { id: queue.id },
+        ));
+
+        try {
+            await client.apis.queues.removeQueue({ queue_id: queue.id });
+            dispatch(fetchQueues());
+            dispatch(actionFinished(StatusActionTypes.REMOVE_QUEUE));
+        } catch ({ message, response }) {
+            dispatch(actionFailed(
+                StatusActionTypes.REMOVE_QUEUE,
+                response.body || message,
+            ));
+            return Promise.reject(); // todo: check how we do it at igabinet
+        }
     };
 };

@@ -10,7 +10,7 @@ const initializeClient = () => {
         }); // TODO: catch definition failed to fetch and display global error
 };
 
-export const getClient = (): Promise<{}> => {
+export const getClient = (): Promise<any> => {
     if (!client) {
         return initializeClient();
     }
