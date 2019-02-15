@@ -1,5 +1,5 @@
 import { ThunkAction, ThunkDispatch as ReduxThunkDispatch } from 'redux-thunk';
-import { RootState } from './reducers/root';
+import { RootState } from './reducers/root-reducer';
 import { Actions } from './actions/types';
 
 declare global {

@@ -1,4 +1,4 @@
-import { StatusAction, StatusActionTypes } from '../actions/status';
+import { StatusAction, StatusActionTypes } from '../actions/status-actions';
 import { Actions } from '../actions/types';
 import { Middleware } from 'redux';
 

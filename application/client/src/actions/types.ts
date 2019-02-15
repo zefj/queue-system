@@ -1,6 +1,6 @@
-import { StatusAction } from './status';
-import { QueuesActions } from './queues';
-import { RoomsActions } from './rooms';
+import { StatusAction } from './status-actions';
+import { QueuesActions } from './queues-actions';
+import { RoomsActions } from './rooms-actions';
 
 export interface IQueue {
     id: number;

@@ -1,5 +1,5 @@
-import { StatusActionPayload, StatusAction, StatusActionTypes } from '../actions/status';
-import { RootState } from './root';
+import { StatusActionPayload, StatusAction, StatusActionTypes } from '../actions/status-actions';
+import { RootState } from './root-reducer';
 
 export type StatusState = {
     readonly [K in StatusActionTypes]?: StatusActionPayload;
@@ -7,7 +7,7 @@ export type StatusState = {
 
 const initialState: StatusState = {};
 
-export const status = (
+export const statusReducer = (
     state = initialState,
     action: StatusAction,
 ): StatusState => {

@@ -4,12 +4,12 @@ import * as _ from 'lodash';
 
 import { Button, Empty, Skeleton, Table, Divider, Row, Col } from 'antd';
 
-import { RootState } from '../../reducers/root';
-import { createQueue, fetchQueues, removeQueue } from '../../actions/queues';
+import { RootState } from '../../reducers/root-reducer';
+import { createQueue, fetchQueues, removeQueue } from '../../actions/queues-actions';
 import { IQueueWithStats } from '../../actions/types';
-import { getQueues } from '../../reducers/queues';
-import { getActionStatus } from '../../reducers/status';
-import { StatusActionPayload, StatusActionTypes } from '../../actions/status';
+import { getQueues } from '../../reducers/queues-reducer';
+import { getActionStatus } from '../../reducers/status-reducer';
+import { StatusActionPayload, StatusActionTypes } from '../../actions/status-actions';
 
 import { ServerErrorEmpty } from '../ErrorComponents/ServerErrorEmpty';
 import { ButtonRow } from '../ButtonRow/ButtonRow';

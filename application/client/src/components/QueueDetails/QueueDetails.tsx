@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { RootState } from '../../reducers/root';
+import { RootState } from '../../reducers/root-reducer';
 
 import { Col, Divider, Row } from 'antd';
 import { PageHeader } from '../PageHeader/PageHeader';

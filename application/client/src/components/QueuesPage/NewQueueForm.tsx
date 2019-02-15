@@ -5,10 +5,10 @@ import * as _ from 'lodash';
 import { Button, Form, Input } from 'antd';
 
 import { connect } from 'react-redux';
-import { RootState } from '../../reducers/root';
+import { RootState } from '../../reducers/root-reducer';
 import { FormComponentProps } from 'antd/lib/form/Form';
-import { getActionStatus } from '../../reducers/status';
-import { StatusActionPayload, StatusActionTypes } from '../../actions/status';
+import { getActionStatus } from '../../reducers/status-reducer';
+import { StatusActionPayload, StatusActionTypes } from '../../actions/status-actions';
 import { handleJoiErrors } from '../../utils/form-handle-joi-errors';
 
 interface ExternalProps extends FormComponentProps {

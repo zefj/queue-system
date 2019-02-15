@@ -1,6 +1,6 @@
 import { getClient } from '../api/client';
 import { IQueueWithStats } from './types';
-import { StatusActionTypes, withStatus } from './status';
+import { StatusActionTypes, withStatus } from './status-actions';
 import { Action } from 'redux';
 
 export enum QueuesActionTypes {

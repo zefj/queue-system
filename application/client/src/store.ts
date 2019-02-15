@@ -1,14 +1,14 @@
 import thunk, { ThunkMiddleware } from 'redux-thunk';
 
 import { createStore, applyMiddleware, compose } from 'redux';
-import { root, RootState } from './reducers/root';
+import { rootReducer, RootState } from './reducers/root-reducer';
 
 import { notifications } from './middleware/notifications';
 
 import { Actions } from './actions/types';
 
 export const store = createStore(
-    root,
+    rootReducer,
     compose(
         applyMiddleware(
            notifications,

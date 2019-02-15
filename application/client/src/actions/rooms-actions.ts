@@ -1,5 +1,5 @@
 import { getClient } from '../api/client';
-import { StatusActionTypes, withStatus } from './status';
+import { StatusActionTypes, withStatus } from './status-actions';
 import { Action } from 'redux';
 import { IRoom } from './types';
 

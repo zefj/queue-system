@@ -1,6 +1,6 @@
-import { RootState } from './root';
+import { RootState } from './root-reducer';
 import { IRoom } from '../actions/types';
-import { RoomsActions, RoomsActionTypes } from '../actions/rooms';
+import { RoomsActions, RoomsActionTypes } from '../actions/rooms-actions';
 
 export interface RoomsState {
     readonly data: IRoom[] | null;
@@ -10,7 +10,7 @@ const initialState: RoomsState = {
     data: null,
 };
 
-export const rooms = (
+export const roomsReducer = (
     state = initialState,
     action: any,
 ): RoomsState => {

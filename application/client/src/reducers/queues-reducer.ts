@@ -1,6 +1,6 @@
-import { RootState } from './root';
+import { RootState } from './root-reducer';
 import { IQueueWithStats } from '../actions/types';
-import { QueuesActions, QueuesActionTypes } from '../actions/queues';
+import { QueuesActions, QueuesActionTypes } from '../actions/queues-actions';
 
 export interface QueuesState {
     readonly data: IQueueWithStats[] | null;
@@ -10,7 +10,7 @@ const initialState: QueuesState = {
     data: null,
 };
 
-export const queues = (
+export const queuesReducer = (
     state = initialState,
     action: any,
 ): QueuesState => {
