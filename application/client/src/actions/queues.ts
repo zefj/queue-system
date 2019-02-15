@@ -1,44 +1,24 @@
 import { getClient } from '../api/client';
-import { QueueInterface } from './types';
-import {
-    actionFailed,
-    actionFinished,
-    actionStarted,
-    StatusActionTypes,
-} from './status';
-import { Action, ActionCreator } from 'redux';
+import { IQueueWithStats } from './types';
+import { StatusActionTypes, withStatus } from './status';
+import { Action } from 'redux';
 
 export enum QueuesActionTypes {
     SET_QUEUES = 'SET_QUEUES',
-    FLUSH_QUEUES = 'FLUSH_QUEUES',
 }
 
-export type QueuesActions = SetQueuesActionInterface | FlushQueuesActionInterface;
+export type QueuesActions = ISetQueuesAction;
 
-export const fetchQueues = (): ThunkResult<Promise<void>> => {
-    return (dispatch) => {
-        return getClient()
-            .then((client: any) => {
-                dispatch(actionStarted(StatusActionTypes.FETCH_QUEUES));
-
-                return client.apis.queues.getQueues()
-                    .then((response: any) => dispatch(setQueues(response.body.queues)))
-                    .then(() => dispatch(actionFinished(StatusActionTypes.FETCH_QUEUES)));
-            })
-            .catch(() => dispatch(actionFailed(StatusActionTypes.FETCH_QUEUES)));
-    };
-};
-
-export interface SetQueuesActionInterface extends Action {
+export interface ISetQueuesAction extends Action {
     type: QueuesActionTypes.SET_QUEUES;
     payload: {
-        queues: QueueInterface[],
+        queues: IQueueWithStats[],
     };
 }
 
-export const setQueues: ActionCreator<SetQueuesActionInterface> = (
-    queues: QueueInterface[],
-) => {
+export const setQueues = (
+    queues: IQueueWithStats[],
+): ISetQueuesAction => {
     return {
         type: QueuesActionTypes.SET_QUEUES,
         payload: {
@@ -47,56 +27,50 @@ export const setQueues: ActionCreator<SetQueuesActionInterface> = (
     };
 };
 
-export interface FlushQueuesActionInterface extends Action {
-    type: QueuesActionTypes.FLUSH_QUEUES;
-    payload: {};
-}
+export const fetchQueues = (): ThunkResult<Promise<void>> => {
+    return async (dispatch) => {
+        const client = await getClient();
+
+        try {
+            const response = await dispatch(withStatus(
+                StatusActionTypes.FETCH_QUEUES,
+                () => client.apis.queues.getQueues(),
+            ));
+
+            dispatch(setQueues(response.body.queues));
+        } catch (e) {
+            dispatch(setQueues([]));
+        }
+    };
+};
 
 export const createQueue = (
     name: string,
 ): ThunkResult<Promise<void>> => {
-    return (dispatch) => {
-        return getClient()
-            .then((client: any) => {
-                dispatch(actionStarted(StatusActionTypes.CREATE_QUEUE));
+    return async (dispatch) => {
+        const client = await getClient();
 
-                return client.apis.queues.createQueue({}, { requestBody: { name } })
-                    .then(() => dispatch(fetchQueues()))
-                    .then(() => dispatch(actionFinished(StatusActionTypes.CREATE_QUEUE)))
-                    // TODO: build an interface for this
-                    .catch(({ message, response }: { message: string, response: any }) => {
-                        dispatch(actionFailed(
-                            StatusActionTypes.CREATE_QUEUE,
-                            response.body || message,
-                        ));
-                        return Promise.reject(); // todo: check how we do it at igabinet
-                    });
-            });
+        await dispatch(withStatus(
+            StatusActionTypes.CREATE_QUEUE,
+            () => client.apis.queues.createQueue({}, { requestBody: { name } }),
+        ));
+
+        dispatch(fetchQueues());
     };
 };
 
 export const removeQueue = (
-    queue: QueueInterface,
+    queue: IQueueWithStats,
 ): ThunkResult<Promise<void>> => {
     return async (dispatch) => {
         const client = await getClient();
 
-        // TODO: test this
-        dispatch(actionStarted(
+        await dispatch(withStatus(
             StatusActionTypes.REMOVE_QUEUE,
-            { id: queue.id },
-        ));
+            () => client.apis.queues.removeQueue({ queue_id: queue.id }),
+            { id: queue.id }),
+        );
 
-        try {
-            await client.apis.queues.removeQueue({ queue_id: queue.id });
-            dispatch(fetchQueues());
-            dispatch(actionFinished(StatusActionTypes.REMOVE_QUEUE));
-        } catch ({ message, response }) {
-            dispatch(actionFailed(
-                StatusActionTypes.REMOVE_QUEUE,
-                response.body || message,
-            ));
-            return Promise.reject(); // todo: check how we do it at igabinet
-        }
+        dispatch(fetchQueues());
     };
 };

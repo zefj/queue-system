@@ -6,14 +6,13 @@ import Queue from './queue-model';
 
 import {
     create as createQueue,
+    getQueues,
     remove as removeQueue,
 } from './queue-actions';
 
 export const getAll: Function = (req: Request, res: Response, next: any) => {
-    return Queue
-        .query()
-        .context({ tenant: req.locals.tenant })
-        .then((queues: Queue[]) => res.json({ queues }))
+    return getQueues(req.locals.tenant)
+        .then(queues => res.json({ queues }))
         .catch(next);
 };
 

@@ -22,10 +22,9 @@
       "es2018",
       "esnext"
     ],
-    "sourceMap": true,
-    "baseUrl": ".",
-    "typeRoots" : [
-      "node_modules/@types"
-    ]
-  }
+    "sourceMap": false
+  },
+  "exclude": [
+    "**/node_modules/*"
+  ]
 }

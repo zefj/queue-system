@@ -1,11 +1,24 @@
+// TODO: typescript
 const HttpStatusError = require('common-errors').HttpStatusError;
 
-const errorHandler = (err, req, res, next) => {
+const logError = (err, req) => {
     /* We log the error internaly */
-    console.error(`[${err.constructor.name}] ${err.message}`);
+    if (req.app.get('env') !== 'production') {
+        logger.error(`[${err.constructor.name}][${err.status_code}] ${err.message}`);
+    } else {
+        logger.debug(`[${err.constructor.name}][${err.status_code}] ${err.message}`);
+    }
 
+    if (err.status_code >= 500) {
+        console.error(err.stack);
+    }
+};
+
+const errorHandler = (err, req, res, next) => {
     const replacementErr = new HttpStatusError(err, req);
     err.status_code = replacementErr.status_code;
+
+    logError(err, req);
 
     /*
      * Remove Error's `stack` property. We don't want
@@ -20,10 +33,6 @@ const errorHandler = (err, req, res, next) => {
         }
     }
 
-    if (err.status_code >= 500) {
-        console.error(err.stack);
-    }
-
     const responseJson = {
         type: err.constructor.name,
         message: err.message,
@@ -32,6 +41,10 @@ const errorHandler = (err, req, res, next) => {
 
     if (err.description) {
         responseJson.description = err.description;
+    }
+
+    if (err.error) {
+        responseJson.error = err.error;
     }
 
     /* Finally respond to the request */

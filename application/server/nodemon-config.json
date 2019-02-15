@@ -3,5 +3,5 @@
     "src"
   ],
   "ext": "js,ts",
-  "exec": "TS_NODE_FILES=true node -r ts-node/register ./src/server.js"
+  "exec": "ts-node ./src/server.js"
 }

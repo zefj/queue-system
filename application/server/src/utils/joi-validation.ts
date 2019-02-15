@@ -4,8 +4,9 @@ const joi = require('joi');
 
 export interface ValidationErrorDescription {
     [name: string]: {
-        msg: string,
         type: string,
+        key: string,
+        message: string,
     };
 }
 
@@ -17,7 +18,7 @@ export class JoiValidationError extends global.Error {
     constructor(description: ValidationErrorDescription) {
         super('Validation error');
         this.description = description;
-        this.status_code = 400;
+        this.status_code = 403;
     }
 }
 

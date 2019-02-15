@@ -1,4 +1,4 @@
-import { StatusActionPayload, StatusActions, StatusActionTypes } from '../actions/status';
+import { StatusActionPayload, StatusAction, StatusActionTypes } from '../actions/status';
 import { RootState } from './root';
 
 export type StatusState = {
@@ -9,7 +9,7 @@ const initialState: StatusState = {};
 
 export const status = (
     state = initialState,
-    action: StatusActions,
+    action: StatusAction,
 ): StatusState => {
     if (StatusActionTypes[action.type]) {
         return {

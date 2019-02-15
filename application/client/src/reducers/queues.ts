@@ -1,9 +1,9 @@
 import { RootState } from './root';
-import { QueueInterface } from '../actions/types';
+import { IQueueWithStats } from '../actions/types';
 import { QueuesActions, QueuesActionTypes } from '../actions/queues';
 
 export interface QueuesState {
-    data: QueueInterface[] | null;
+    readonly data: IQueueWithStats[] | null;
 }
 
 const initialState: QueuesState = {
@@ -25,4 +25,4 @@ export const queues = (
     }
 };
 
-export const getQueues = (state: RootState): QueueInterface[] | null => state.queues.data;
+export const getQueues = (state: RootState) => state.queues.data;

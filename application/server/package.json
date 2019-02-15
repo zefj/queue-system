@@ -15,10 +15,12 @@
     "@types/passport": "^1.0.0",
     "@types/ws": "^6.0.1",
     "chai": "^4.2.0",
+    "chokidar": "^2.1.1",
     "mocha": "^5.2.0",
     "nodemon": "^1.18.3",
     "swagger-ui-express": "^4.0.2",
     "ts-node": "^7.0.1",
+    "ts-node-dev": "^1.0.0-pre.32",
     "tsconfig-paths": "^3.6.0",
     "tslint": "^5.11.0",
     "tslint-config-airbnb": "^5.11.0",
@@ -48,8 +50,9 @@
     "winston": "^3.1.0"
   },
   "scripts": {
-    "develop": "NODE_ENV=development node_modules/nodemon/bin/nodemon.js -L --config nodemon-config.json",
-    "develop:inspect": "NODE_ENV=development node_modules/nodemon/bin/nodemon.js --config nodemon-config.json --exec 'TS_NODE_FILES=true node -r ts-node/register --inspect=0.0.0.0:9229 ./src/server.js'",
+    "start": "NODE_ENV=development node_modules/ts-node-dev/bin/ts-node-dev --files --transpileOnly --poll --ignore-watch node_modules src/server.js",
+    "develop": "NODE_ENV=development TS_NODE_FILES=true node_modules/nodemon/bin/nodemon.js -L --config nodemon-config.json",
+    "develop:inspect": "NODE_ENV=development TS_NODE_FILES=true  node_modules/nodemon/bin/nodemon.js --config nodemon-config.json --exec 'ts-node --inspect=0.0.0.0:9229 ./src/server.js'",
     "test": "NODE_ENV=test node node_modules/mocha/bin/mocha --opts mocha.opts",
     "lint": "node_modules/tslint/bin/tslint -c tslint.js 'src/**/*.ts'"
   },

@@ -1,3 +1,5 @@
+import * as _ from 'lodash';
+
 import { Action } from 'redux';
 import { ServerException } from './types';
 
@@ -21,80 +23,15 @@ export type StatusActionPayload = {
     error?: ServerException | string,
 };
 
-interface StatusAction extends Action {
-    type: string;
+export interface StatusAction extends Action {
+    type: StatusActionTypes;
     payload: StatusActionPayload;
 }
 
-/*
-// Type defined as enum vs string literal:
-// Enums:
-dispatch(setActionStatus(StatusActionTypes.FETCH_QUEUES, 'started')); // VALID
-dispatch(setActionStatus('FETCH_QUEUES', 'started')); // VALID
-dispatch(setActionStatus('invalid', 'started')); // ERROR
-dispatch(setActionStatus(1, 'started')); // ERROR
-
-// String literals:
-dispatch(setActionStatus(StatusActionTypes.FETCH_QUEUES, 'started')); // VALID
-dispatch(setActionStatus('FETCH_QUEUES', 'started')); // ERROR
-dispatch(setActionStatus('invalid', 'started')); // ERROR
-dispatch(setActionStatus(1, 'started')); // ERROR
-
-Make whatever you want out of it, but if you ever need to pass in string literal type,
-you should change the types in the interfaces.
-*/
-export interface FetchQueuesStatus extends StatusAction {
-    // type: 'FETCH_QUEUES';
-    type: StatusActionTypes.FETCH_QUEUES;
-}
-export interface FetchRoomsStatus extends StatusAction {
-    // type: 'FETCH_ROOMS';
-    type: StatusActionTypes.FETCH_ROOMS;
-}
-export interface CreateQueueStatus extends StatusAction {
-    // type: 'FETCH_ROOMS';
-    type: StatusActionTypes.CREATE_QUEUE;
-}
-export interface RemoveQueueStatus extends StatusAction {
-    // type: 'REMOVE_QUEUE';
-    type: StatusActionTypes.REMOVE_QUEUE;
-}
-
-export type StatusActions = FetchQueuesStatus | FetchRoomsStatus | CreateQueueStatus | RemoveQueueStatus;
-
-/* tslint:disable */
-// export const setActionStatus = (
-//     actionType: StatusActions['type'],
-//     status: ActionStatus,
-//     error?: ServerException | string,
-// ): StatusActions => {
-//     const payload: StatusActionPayload = { status };
-//
-//     if (error) {
-//         payload.error = error;
-//     }
-//
-//     /* tslint:disable:max-line-length */
-//     /*
-//     Ignoring this error:
-//     Type error: Type '{ payload: { status: ActionStatus; }; type: StatusActionTypes; }' is not assignable to type 'StatusActions'.
-//     Type '{ payload: { status: ActionStatus; }; type: StatusActionTypes; }' is not assignable to type 'FetchRoomsStatus'.
-//     Types of property 'type' are incompatible.
-//     Type 'StatusActionTypes' is not assignable to type 'StatusActionTypes.FETCH_ROOMS'.  TS2322
-//     */
-//     /* tslint:enable:max-line-length */
-//     // @ts-ignore
-//     return {
-//         payload,
-//         type: actionType,
-//     };
-// };
-/* tslint:enable */
-
 export const actionStarted = (
-    actionType: StatusActions['type'],
+    actionType: StatusAction['type'],
     additional?: {},
-): StatusActions => {
+): StatusAction => {
     const payload: StatusActionPayload = {
         additional,
         status: 'started',
@@ -103,7 +40,7 @@ export const actionStarted = (
     /* tslint:disable:max-line-length */
     /*
     Ignoring this error:
-    Type error: Type '{ payload: { status: ActionStatus; }; type: StatusActionTypes; }' is not assignable to type 'StatusActions'.
+    Type error: Type '{ payload: { status: ActionStatus; }; type: StatusActionTypes; }' is not assignable to type 'StatusAction'.
     Type '{ payload: { status: ActionStatus; }; type: StatusActionTypes; }' is not assignable to type 'FetchRoomsStatus'.
     Types of property 'type' are incompatible.
     Type 'StatusActionTypes' is not assignable to type 'StatusActionTypes.FETCH_ROOMS'.  TS2322
@@ -117,14 +54,14 @@ export const actionStarted = (
 };
 
 export const actionFinished = (
-    actionType: StatusActions['type'],
-): StatusActions => {
+    actionType: StatusAction['type'],
+): StatusAction => {
     const payload: StatusActionPayload = { status: 'finished' };
 
     /* tslint:disable:max-line-length */
     /*
     Ignoring this error:
-    Type error: Type '{ payload: { status: ActionStatus; }; type: StatusActionTypes; }' is not assignable to type 'StatusActions'.
+    Type error: Type '{ payload: { status: ActionStatus; }; type: StatusActionTypes; }' is not assignable to type 'StatusAction'.
     Type '{ payload: { status: ActionStatus; }; type: StatusActionTypes; }' is not assignable to type 'FetchRoomsStatus'.
     Types of property 'type' are incompatible.
     Type 'StatusActionTypes' is not assignable to type 'StatusActionTypes.FETCH_ROOMS'.  TS2322
@@ -138,9 +75,9 @@ export const actionFinished = (
 };
 
 export const actionFailed = (
-    actionType: StatusActions['type'],
+    actionType: StatusAction['type'],
     error?: ServerException | string,
-): StatusActions => {
+): StatusAction => {
     const payload: StatusActionPayload = { status: 'failed' };
 
     if (error) {
@@ -150,7 +87,7 @@ export const actionFailed = (
     /* tslint:disable:max-line-length */
     /*
     Ignoring this error:
-    Type error: Type '{ payload: { status: ActionStatus; }; type: StatusActionTypes; }' is not assignable to type 'StatusActions'.
+    Type error: Type '{ payload: { status: ActionStatus; }; type: StatusActionTypes; }' is not assignable to type 'StatusAction'.
     Type '{ payload: { status: ActionStatus; }; type: StatusActionTypes; }' is not assignable to type 'FetchRoomsStatus'.
     Types of property 'type' are incompatible.
     Type 'StatusActionTypes' is not assignable to type 'StatusActionTypes.FETCH_ROOMS'.  TS2322
@@ -161,4 +98,27 @@ export const actionFailed = (
         payload,
         type: actionType,
     };
+};
+
+export const withStatus = (
+    actionType: StatusAction['type'],
+    fn: () => Promise<any>,
+    startActionData?: {},
+): ThunkResult<Promise<any>> => async (dispatch) => {
+    try {
+        dispatch(actionStarted(
+            actionType,
+            startActionData,
+        ));
+
+        const result = await fn();
+
+        dispatch(actionFinished(actionType));
+
+        return result;
+    } catch (err) {
+        dispatch(actionFailed(actionType, _.get(err, 'response.body', null) || err.message));
+
+        return Promise.reject(err);
+    }
 };

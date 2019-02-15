@@ -7,20 +7,21 @@ import { Button, Empty, Skeleton, Table, Divider, Row, Col } from 'antd';
 import { connect } from 'react-redux';
 import { createQueue, fetchQueues, removeQueue } from '../../actions/queues';
 import { RootState } from '../../reducers/root';
-import { QueueInterface } from '../../actions/types';
+import { IQueueWithStats } from '../../actions/types';
 import { getQueues } from '../../reducers/queues';
 import { getActionStatus } from '../../reducers/status';
 import { StatusActionPayload, StatusActionTypes } from '../../actions/status';
 
 import { ServerErrorEmpty } from '../ErrorComponents/ServerErrorEmpty';
+import { ButtonRow } from '../ButtonRow/ButtonRow';
 
 import { NewQueueFormFields, NewQueueForm } from './NewQueueForm';
 
 type Props = {
-    queues: QueueInterface[] | undefined,
+    queues: IQueueWithStats[] | null,
     fetchQueues: () => {},
     createQueue: (fields: NewQueueFormFields) => Promise<any>,
-    removeQueue: (queue: QueueInterface) => Promise<any>,
+    removeQueue: (queue: IQueueWithStats) => Promise<any>,
     fetchStatus: StatusActionPayload,
     removeStatus: StatusActionPayload,
 };
@@ -69,7 +70,7 @@ class QueuesListComponent extends Component<Props, State> {
         // TODO: animate row deletion and addition
         return (
             <Table
-                dataSource={this.props.queues}
+                dataSource={this.props.queues as IQueueWithStats[]}
                 pagination={{ pageSize: 10 }}
             >
                 <Table.Column
@@ -83,13 +84,31 @@ class QueuesListComponent extends Component<Props, State> {
                     key="created_at"
                 />
                 <Table.Column
+                    title="Rooms"
+                    dataIndex="rooms_count"
+                    key="rooms_count"
+                />
+                <Table.Column
+                    title="Tickets"
+                    dataIndex="tickets_count"
+                    key="tickets_count"
+                />
+                <Table.Column
                     align="right"
                     key="action"
-                    render={(queue: QueueInterface) => {
+                    render={(queue: IQueueWithStats) => {
                         const { status, additional } = this.props.removeStatus;
 
                         return (
-                            <span>
+                            <ButtonRow>
+                                <Button
+                                    type="primary"
+                                    htmlType="button"
+                                    icon="delete"
+                                    onClick={() => {}}
+                                >
+                                    Details
+                                </Button>
                                 <Button
                                     htmlType="button"
                                     icon="delete"
@@ -99,7 +118,7 @@ class QueuesListComponent extends Component<Props, State> {
                                 >
                                     Delete
                                 </Button>
-                            </span>
+                            </ButtonRow>
                         );
                     }}
                 />
@@ -142,7 +161,7 @@ class QueuesListComponent extends Component<Props, State> {
 }
 
 const mapStateToProps = (state: RootState) => ({
-    queues: getQueues(state) as QueueInterface[] || null,
+    queues: getQueues(state),
     fetchStatus: getActionStatus(state, StatusActionTypes.FETCH_QUEUES),
     removeStatus: getActionStatus(state, StatusActionTypes.REMOVE_QUEUE),
 });
@@ -150,7 +169,7 @@ const mapStateToProps = (state: RootState) => ({
 const mapDispatchToProps = (dispatch: ThunkDispatch) => ({
     fetchQueues: () => dispatch(fetchQueues()),
     createQueue: (fields: NewQueueFormFields) => dispatch(createQueue(fields.name)),
-    removeQueue: (queue: QueueInterface) => dispatch(removeQueue(queue)),
+    removeQueue: (queue: IQueueWithStats) => dispatch(removeQueue(queue)),
 });
 
 // tslint:disable-next-line:variable-name

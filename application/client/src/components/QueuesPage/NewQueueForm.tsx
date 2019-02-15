@@ -9,6 +9,7 @@ import { RootState } from '../../reducers/root';
 import { FormComponentProps } from 'antd/lib/form/Form';
 import { getActionStatus } from '../../reducers/status';
 import { StatusActionPayload, StatusActionTypes } from '../../actions/status';
+import { handleJoiErrors } from '../../utils/form-handle-joi-errors';
 
 interface ExternalProps extends FormComponentProps {
     onSubmit: (fields: NewQueueFormFields) => any;
@@ -22,6 +23,7 @@ export type NewQueueFormFields = {
     name: string,
 };
 
+// TODO: test this
 class NewQueueFormComponent extends Component<Props> {
     constructor(props: Props) {
         super(props);
@@ -36,49 +38,63 @@ class NewQueueFormComponent extends Component<Props> {
     }
 
     componentDidUpdate(prevProps: Props) {
-        const errors = this.props.createQueueStatus.error;
+        const error = this.props.createQueueStatus.error;
 
-        if (_.isEqual(prevProps.createQueueStatus.error, errors)) {
+        if (!error || typeof error === 'string' || _.isEqual(prevProps.createQueueStatus.error, error)) {
             return;
         }
 
-        if (errors && typeof errors !== 'string' && errors.description) {
-            let newState = {};
+        if (error.description) {
+            return this.props.form.setFields(
+                handleJoiErrors(error.description, this.props.form.getFieldValue),
+            );
+        }
 
-            _.forOwn(errors.description, (value, key) => {
-                newState = {
-                    ...newState,
-                    [key]: {
-                        value: this.props.form.getFieldValue(key),
-                        errors: [new Error(value.key)], // TODO: l10n
-                    },
-                };
+        if (error.error === 'ALREADY-EXISTS') {
+            return this.props.form.setFields({
+                name: {
+                    value: this.props.form.getFieldValue('name'),
+                    errors: [new Error('error.name.exists')],
+                },
             });
-
-            this.props.form.setFields(newState);
         }
     }
 
     render() {
         const { getFieldDecorator } = this.props.form;
+        const { status } = this.props.createQueueStatus;
 
         const formItemLayout = {
-            labelCol: { span: 2 },
-            wrapperCol: { span: 6 },
+            labelCol: {
+                xs: { span: 24 },
+                sm: { span: 8 },
+            },
+            wrapperCol: {
+                xs: { span: 24 },
+                sm: { span: 16 },
+            },
         };
-
         const formTailLayout = {
-            wrapperCol: { span: 5, offset: 4 },
+            wrapperCol: {
+                xs: {
+                    span: 24,
+                    offset: 0,
+                },
+                sm: {
+                    span: 16,
+                    offset: 8,
+                },
+            },
         };
 
+        // TODO: style this better
         return (
-            <div>
+            <Form style={{ maxWidth: '600px' }}>
                 <Form.Item {...formItemLayout} label="Name">
                     {
                         getFieldDecorator('name', {
                             rules: [{
                                 required: true,
-                                // max: 32,
                                 message: 'Please input the name',
                             }],
                         })(
@@ -87,11 +103,16 @@ class NewQueueFormComponent extends Component<Props> {
                     }
                 </Form.Item>
                 <Form.Item {...formTailLayout}>
-                    <Button type="primary" onClick={this.handleSubmit}>
+                    <Button
+                        type="primary"
+                        htmlType="button"
+                        loading={status === 'started'}
+                        onClick={this.handleSubmit}
+                    >
                         Create
                     </Button>
                 </Form.Item>
-            </div>
+            </Form>
         );
     }
 }

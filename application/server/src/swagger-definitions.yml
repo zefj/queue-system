@@ -20,6 +20,33 @@ components:
         password:
           tokenUrl: /auth/user/authorize
   schemas:
+    Error:
+      type: object
+      required:
+      - message
+      - type
+      properties:
+        type:
+          type: string
+        message:
+          type: string
+
+    JoiValidationError:
+      allOf:
+      - $ref: '#/components/schemas/Error'
+      - type: object
+        properties:
+          description: # TODO: describe this
+            type: object
+
+    NotPermittedError:
+      allOf:
+      - $ref: '#/components/schemas/Error'
+      - type: object
+        properties:
+          error:
+            type: string
+
     Queue:
       type: "object"
       properties:
@@ -46,6 +73,7 @@ paths:
       operationId: "getQueues"
       responses:
         200:
+          description: "Success response"
           content:
             application/json:
               schema:
@@ -54,7 +82,14 @@ paths:
                   queues:
                     type: "array"
                     items:
-                      $ref: "#/components/schemas/Queue"
+                      allOf:
+                      - $ref: '#/components/schemas/Queue'
+                      - type: object
+                        properties:
+                          rooms_count:
+                            type: integer
+                          tickets_count:
+                            type: integer
       security:
       - user_auth: []
 
@@ -71,21 +106,30 @@ paths:
             schema:
               type: object
               required:
-                - name
+              - name
               properties:
                 name:
                   type: string
                   maxLength: 32
       responses:
         200:
+          description: "Success response"
           content:
             application/json:
               schema:
                 type: "object"
                 properties:
                   queues:
-                    type: "object"
                     $ref: "#/components/schemas/Queue"
+        403:
+          description: "Error response"
+          content:
+            application/json:
+              schema:
+                type: object
+                oneOf:
+                - $ref: "#/components/schemas/NotPermittedError"
+                - $ref: "#/components/schemas/JoiValidationError"
       security:
       - user_auth: []
 
@@ -96,14 +140,15 @@ paths:
       summary: "Remove a queue"
       operationId: "removeQueue"
       parameters:
-        - in: path
-          name: queue_id
-          required: true
-          schema:
-            type: integer
-            maxLength: 10
+      - in: path
+        name: queue_id
+        required: true
+        schema:
+          type: integer
+          maxLength: 10
       responses:
         200:
+          description: "Success response"
           content:
             application/json:
               schema:
