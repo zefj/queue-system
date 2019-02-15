@@ -1,46 +1,32 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
 
-import { RootState } from '../../reducers/root-reducer';
-
-import { Col, Divider, Row } from 'antd';
+import { Col, Row } from 'antd';
 import { PageHeader } from '../PageHeader/PageHeader';
 
-class QueueDetails extends Component<Props, State> {
+import RoomsList from './RoomsList';
+import QueueInfo from './QueueInfo';
+
+export class QueueDetails extends Component<Props> {
     render() {
         return (
             <>
                 <PageHeader title={`Queue ${this.props.id}`} />
-                <Row>
-                    <Col>
-
+                <Row gutter={32}>
+                    <Col lg={8} sm={24}>
+                        <QueueInfo id={this.props.id} />
                     </Col>
-                    rooms list
+                    <Col lg={8} sm={24}>
+                        <RoomsList queueId={this.props.id} />
+                    </Col>
+                    <Col lg={8} sm={24}>
+                        Check the statistax
+                    </Col>
                 </Row>
             </>
         );
     }
 }
 
-export interface OwnProps {
-    id: string;
+export interface Props {
+    id: number;
 }
-
-interface StateProps {}
-
-interface DispatchProps {}
-
-type Props = StateProps & DispatchProps & OwnProps;
-
-interface State {}
-
-const mapStateToProps = (state: RootState, ownProps: OwnProps): StateProps => ({
-    ...ownProps,
-});
-
-const mapDispatchToProps = (dispatch: ThunkDispatch, ownProps: OwnProps): DispatchProps => ({});
-
-export default connect<StateProps, DispatchProps, OwnProps, RootState>(
-    mapStateToProps,
-    mapDispatchToProps,
-)(QueueDetails);

@@ -5,6 +5,7 @@ import { ServerException } from './types';
 
 export enum StatusActionTypes {
     FETCH_QUEUES = 'FETCH_QUEUES',
+    FETCH_QUEUE = 'FETCH_QUEUE',
     FETCH_QUEUE_ROOMS = 'FETCH_QUEUE_ROOMS',
     CREATE_QUEUE = 'CREATE_QUEUE',
     REMOVE_QUEUE = 'REMOVE_QUEUE',

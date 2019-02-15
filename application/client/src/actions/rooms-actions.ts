@@ -33,7 +33,7 @@ export const fetchRoomsForQueue = (queueId: number): ThunkResult<Promise<void>> 
 
         const response = await dispatch(withStatus(
             StatusActionTypes.FETCH_QUEUE_ROOMS,
-            () => client.apis.queues.getRoomsForQueue(queueId),
+            () => client.apis.rooms.getQueueRooms({ queue_id: queueId }),
         ));
 
         dispatch(setQueueRooms(response.body.rooms));

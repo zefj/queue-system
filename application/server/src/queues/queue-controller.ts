@@ -5,7 +5,7 @@ const errors = require('common-errors');
 import Queue from './queue-model';
 
 import {
-    create as createQueue,
+    create as createQueue, getQueueById,
     getQueues,
     remove as removeQueue,
 } from './queue-actions';
@@ -13,6 +13,22 @@ import {
 export const getAll: Function = (req: Request, res: Response, next: any) => {
     return getQueues(req.locals.tenant)
         .then(queues => res.json({ queues }))
+        .catch(next);
+};
+
+export const getOne = (req: Request, res: Response, next: any) => {
+    const schema = joi.number().integer().required();
+
+    joi.validate(req.params.queue, schema, (error: Error) => {
+        if (!error) {
+            return;
+        }
+
+        throw new errors.ValidationError(error.message);
+    });
+
+    return getQueueById(req.locals.tenant, req.params.queue)
+        .then(queue => res.json({ queue }))
         .catch(next);
 };
 

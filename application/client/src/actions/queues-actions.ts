@@ -5,14 +5,22 @@ import { Action } from 'redux';
 
 export enum QueuesActionTypes {
     SET_QUEUES = 'SET_QUEUES',
+    SET_QUEUE = 'SET_QUEUE',
 }
 
-export type QueuesActions = ISetQueuesAction;
+export type QueuesActions = ISetQueuesAction | ISetQueueAction;
 
 export interface ISetQueuesAction extends Action {
     type: QueuesActionTypes.SET_QUEUES;
     payload: {
         queues: IQueueWithStats[],
+    };
+}
+
+export interface ISetQueueAction extends Action {
+    type: QueuesActionTypes.SET_QUEUE;
+    payload: {
+        queue: IQueueWithStats,
     };
 }
 
@@ -23,6 +31,17 @@ export const setQueues = (
         type: QueuesActionTypes.SET_QUEUES,
         payload: {
             queues,
+        },
+    };
+};
+
+export const setQueue = (
+    queue: IQueueWithStats,
+): ISetQueueAction => {
+    return {
+        type: QueuesActionTypes.SET_QUEUE,
+        payload: {
+            queue,
         },
     };
 };
@@ -41,6 +60,19 @@ export const fetchQueues = (): ThunkResult<Promise<void>> => {
         } catch (e) {
             dispatch(setQueues([]));
         }
+    };
+};
+
+export const fetchQueue = (id: number): ThunkResult<Promise<void>> => {
+    return async (dispatch) => {
+        const client = await getClient();
+
+        const response = await dispatch(withStatus(
+            StatusActionTypes.FETCH_QUEUE,
+            () => client.apis.queues.getQueue({ queue_id: id }),
+        ));
+
+        dispatch(setQueue(response.body.queue));
     };
 };
 

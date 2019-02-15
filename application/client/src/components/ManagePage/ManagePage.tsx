@@ -7,7 +7,7 @@ import './ManagePage.css';
 import { ManagePageMenu } from './ManagePageMenu';
 import { Route, RouteComponentProps, withRouter } from 'react-router';
 import { QueuesList } from '../QueuesPage/QueuesList';
-import QueueDetails from '../QueueDetails/QueueDetails';
+import { QueueDetails } from '../QueueDetails/QueueDetails';
 
 type Props = RouteComponentProps;
 
@@ -31,7 +31,7 @@ class ManagePageComponent extends Component<Props> {
                             path="/manage/queue/:id"
                             component={
                                 (props: RouteComponentProps<QueueDetailsMatchParams>) =>
-                                    <QueueDetails id={props.match.params.id} />
+                                    <QueueDetails id={parseInt(props.match.params.id, 10)} />
                             }
                         />
                         <Route path={'/manage/rooms'} component={() => <div>rooms</div>}/>

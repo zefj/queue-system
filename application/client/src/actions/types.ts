@@ -6,8 +6,8 @@ export interface IQueue {
     id: number;
     tenant: string;
     name: string;
-    created: string;
-    updated: string;
+    created_at: string;
+    updated_at: string;
 }
 
 export interface IQueueWithStats extends IQueue {
@@ -20,8 +20,8 @@ export interface IRoom {
     tenant: string;
     name: string;
     queue_id: number;
-    created: string;
-    updated: string;
+    created_at: string;
+    updated_at: string;
 }
 
 export type Actions = QueuesActions | StatusAction | RoomsActions;

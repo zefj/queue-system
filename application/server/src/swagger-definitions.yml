@@ -110,6 +110,27 @@ paths:
                           tickets_count:
                             type: integer
 
+  /queue/{queue_id}/get:
+    get:
+      tags:
+      - "queues"
+      summary: "Get information about a queue"
+      operationId: "getQueue"
+      parameters:
+      - in: path
+        name: queue_id
+        required: true
+        schema:
+          type: integer
+          maxLength: 10
+      responses:
+        200:
+          description: "Success response"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Queue'
+
   /queue/create:
     post:
       tags:
@@ -178,7 +199,7 @@ paths:
       tags:
       - "rooms"
       summary: "Get rooms assigned to a queue"
-      operationId: "getRoomsForQueue"
+      operationId: "getQueueRooms"
       parameters:
       - in: path
         name: queue_id

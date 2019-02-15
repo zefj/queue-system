@@ -1,5 +1,5 @@
 import React, { ReactNode } from 'react';
-import { Button, Col, Divider, Row } from 'antd';
+import { Col, Divider, Row } from 'antd';
 
 export const PageHeader: React.FC<{ title: string, buttons?: ReactNode }> = ({ title, buttons }) => (
     <Row type="flex" justify="space-between" gutter={16}>
@@ -21,7 +21,3 @@ export const PageHeader: React.FC<{ title: string, buttons?: ReactNode }> = ({ t
         }
     </Row>
 );
-
-interface Props {
-
-}

@@ -27,7 +27,8 @@
     "variable-name": [
       true,
       "allow-pascal-case"
-    ]
+    ],
+    "jsx-boolean-value": [false]
   },
   "rulesDirectory": []
 }

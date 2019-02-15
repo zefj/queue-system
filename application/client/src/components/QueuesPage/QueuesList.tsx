@@ -2,12 +2,12 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import * as _ from 'lodash';
 
-import { Button, Empty, Skeleton, Table, Divider, Row, Col } from 'antd';
+import { Button, Empty, Skeleton, Table } from 'antd';
 
 import { RootState } from '../../reducers/root-reducer';
 import { createQueue, fetchQueues, removeQueue } from '../../actions/queues-actions';
 import { IQueueWithStats } from '../../actions/types';
-import { getQueues } from '../../reducers/queues-reducer';
+import { getQueuesList } from '../../reducers/queues-reducer';
 import { getActionStatus } from '../../reducers/status-reducer';
 import { StatusActionPayload, StatusActionTypes } from '../../actions/status-actions';
 
@@ -47,7 +47,7 @@ class QueuesListComponent extends Component<Props, State> {
 
         if (this.props.fetchStatus.status === 'started' && this.props.queues === null) {
             return (
-                <Skeleton active/>
+                <Skeleton active />
             );
         }
 
@@ -172,7 +172,7 @@ interface OwnProps {}
 type Props = StateProps & DispatchProps & OwnProps;
 
 const mapStateToProps = (state: RootState): StateProps => ({
-    queues: getQueues(state),
+    queues: getQueuesList(state),
     fetchStatus: getActionStatus(state, StatusActionTypes.FETCH_QUEUES),
     removeStatus: getActionStatus(state, StatusActionTypes.REMOVE_QUEUE),
 });
