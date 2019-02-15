@@ -63,6 +63,25 @@ components:
           type: string
         updated_at:
           type: string
+    Room:
+      type: "object"
+      properties:
+        id:
+          type: integer
+          maxLength: 10
+        tenant:
+          type: string
+          maxLength: 36
+        name:
+          type: string
+          maxLength: 32
+        queue_id:
+          type: integer
+          maxLength: 10
+        created_at:
+          type: string
+        updated_at:
+          type: string
 
 paths:
   /queue/get:
@@ -90,8 +109,6 @@ paths:
                             type: integer
                           tickets_count:
                             type: integer
-      security:
-      - user_auth: []
 
   /queue/create:
     post:
@@ -130,8 +147,6 @@ paths:
                 oneOf:
                 - $ref: "#/components/schemas/NotPermittedError"
                 - $ref: "#/components/schemas/JoiValidationError"
-      security:
-      - user_auth: []
 
   /queue/{queue_id}/remove:
     post:
@@ -157,5 +172,24 @@ paths:
                   removed:
                     description: "Amount of queues removed"
                     type: "number"
-      security:
-      - user_auth: []
+
+  /queue/{queue_id}/room/get:
+    get:
+      tags:
+      - "rooms"
+      summary: "Get rooms assigned to a queue"
+      operationId: "getRoomsForQueue"
+      parameters:
+      - in: path
+        name: queue_id
+        required: true
+        schema:
+          type: integer
+          maxLength: 10
+      responses:
+        200:
+          description: "Success response"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Queue'

@@ -79,13 +79,17 @@
   ],
   "devDependencies": {
     "@types/jest": "^23.3.13",
+    "@types/lodash": "^4.14.120",
     "@types/node": "^10.12.18",
     "@types/react": "^16.7.20",
     "@types/react-dom": "^16.0.11",
-    "@types/lodash": "^4.14.120",
     "@types/react-redux": "^7.0.1",
+    "@types/react-router": "^4.4.4",
     "@types/react-router-dom": "^4.3.1",
-    "@types/styled-components": "^4.1.10"
+    "@types/styled-components": "^4.1.10",
+    "tslint": "^5.12.1",
+    "tslint-config-airbnb": "^5.11.1",
+    "tslint-react": "^3.6.0"
   },
   "jest": {
     "collectCoverageFrom": [

@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
-
+import { connect } from 'react-redux';
 import * as _ from 'lodash';
 
 import { Button, Empty, Skeleton, Table, Divider, Row, Col } from 'antd';
 
-import { connect } from 'react-redux';
-import { createQueue, fetchQueues, removeQueue } from '../../actions/queues';
 import { RootState } from '../../reducers/root';
+import { createQueue, fetchQueues, removeQueue } from '../../actions/queues';
 import { IQueueWithStats } from '../../actions/types';
 import { getQueues } from '../../reducers/queues';
 import { getActionStatus } from '../../reducers/status';
@@ -16,15 +15,8 @@ import { ServerErrorEmpty } from '../ErrorComponents/ServerErrorEmpty';
 import { ButtonRow } from '../ButtonRow/ButtonRow';
 
 import { NewQueueFormFields, NewQueueForm } from './NewQueueForm';
-
-type Props = {
-    queues: IQueueWithStats[] | null,
-    fetchQueues: () => {},
-    createQueue: (fields: NewQueueFormFields) => Promise<any>,
-    removeQueue: (queue: IQueueWithStats) => Promise<any>,
-    fetchStatus: StatusActionPayload,
-    removeStatus: StatusActionPayload,
-};
+import { NavLink } from 'react-router-dom';
+import { PageHeader } from '../PageHeader/PageHeader';
 
 type State = {
     new_form: boolean,
@@ -101,14 +93,17 @@ class QueuesListComponent extends Component<Props, State> {
 
                         return (
                             <ButtonRow>
-                                <Button
-                                    type="primary"
-                                    htmlType="button"
-                                    icon="delete"
-                                    onClick={() => {}}
-                                >
-                                    Details
-                                </Button>
+                                <NavLink to={`/manage/queue/${queue.id}`}>
+                                    <Button
+                                        type="primary"
+                                        htmlType="button"
+                                        icon="delete"
+                                        onClick={() => {}}
+                                    >
+                                        Details
+                                    </Button>
+                                </NavLink>
+
                                 <Button
                                     htmlType="button"
                                     icon="delete"
@@ -128,22 +123,22 @@ class QueuesListComponent extends Component<Props, State> {
 
     render() {
         return (
-            <div>
-                <Row>
-                    <Col span={22}>
-                        <Divider orientation="left" style={{ marginTop: 0 }}>Queues</Divider>
-                    </Col>
-                    <Col span={2} style={{ textAlign: 'right' }}>
-                        <Button
-                            type="primary"
-                            htmlType="button"
-                            style={{ marginBottom: 16 }}
-                            onClick={this.handleNewQueueClick}
-                        >
-                            New queue
-                        </Button>
-                    </Col>
-                </Row>
+            <>
+                <PageHeader
+                    title="Queues"
+                    buttons={(
+                        <>
+                            <Button
+                                type="primary"
+                                htmlType="button"
+                                style={{ marginBottom: 16 }}
+                                onClick={this.handleNewQueueClick}
+                            >
+                                New queue
+                            </Button>
+                        </>
+                    )}
+                />
 
                 {
                     this.state.new_form &&
@@ -155,25 +150,41 @@ class QueuesListComponent extends Component<Props, State> {
                 }
 
                 { this.getContent() }
-            </div>
+            </>
         );
     }
 }
 
-const mapStateToProps = (state: RootState) => ({
+interface StateProps {
+    queues: IQueueWithStats[] | null;
+    fetchStatus: StatusActionPayload;
+    removeStatus: StatusActionPayload;
+}
+
+interface DispatchProps {
+    fetchQueues: () => {};
+    createQueue: (fields: NewQueueFormFields) => Promise<any>;
+    removeQueue: (queue: IQueueWithStats) => Promise<any>;
+}
+
+interface OwnProps {}
+
+type Props = StateProps & DispatchProps & OwnProps;
+
+const mapStateToProps = (state: RootState): StateProps => ({
     queues: getQueues(state),
     fetchStatus: getActionStatus(state, StatusActionTypes.FETCH_QUEUES),
     removeStatus: getActionStatus(state, StatusActionTypes.REMOVE_QUEUE),
 });
 
-const mapDispatchToProps = (dispatch: ThunkDispatch) => ({
+const mapDispatchToProps = (dispatch: ThunkDispatch, ownProps: OwnProps): DispatchProps => ({
     fetchQueues: () => dispatch(fetchQueues()),
     createQueue: (fields: NewQueueFormFields) => dispatch(createQueue(fields.name)),
     removeQueue: (queue: IQueueWithStats) => dispatch(removeQueue(queue)),
 });
 
 // tslint:disable-next-line:variable-name
-export const QueuesList = connect(
+export const QueuesList = connect<StateProps, DispatchProps, OwnProps, RootState>(
     mapStateToProps,
     mapDispatchToProps,
 )(QueuesListComponent);

@@ -5,11 +5,12 @@ const errors = require('common-errors');
 import Room from './room-model';
 
 import {
+    getForQueue,
     create as createRoom,
     remove as removeRoom,
 } from './room-actions';
 
-export const getAll: Function = (req: Request, res: Response, next: any) => {
+export const get: Function = (req: Request, res: Response, next: any) => {
     const schema = joi.object().keys({
         queue: joi.number().integer().required(),
     });
@@ -22,9 +23,7 @@ export const getAll: Function = (req: Request, res: Response, next: any) => {
         throw new errors.ValidationError(error.message);
     });
 
-    // todo: move to actions?
-    return Room.query().context({ tenant: req.locals.tenant })
-        .where('queue_id', req.params.queue)
+    return getForQueue(req.locals.tenant, req.params.queue)
         .then((rooms: Room[]) => res.json({ rooms }))
         .catch(next);
 };

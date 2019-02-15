@@ -12,6 +12,11 @@ import {
 
 import { getQueueById } from '../queues/queue-actions';
 
+export const getForQueue = (tenant, queueId: number): Promise<Room[]> => {
+    return Room.query().context({ tenant })
+        .where('queue_id', queueId);
+};
+
 export const create = (tenant, queueId: number, name: string): Promise<Room> => {
     const schema = joi.string().max(32).required(); // TODO: allow more than alphanum
 

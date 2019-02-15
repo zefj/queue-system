@@ -2,7 +2,7 @@ import { StatusActionPayload, StatusAction, StatusActionTypes } from '../actions
 import { RootState } from './root';
 
 export type StatusState = {
-    [K in StatusActionTypes]?: StatusActionPayload;
+    readonly [K in StatusActionTypes]?: StatusActionPayload;
 };
 
 const initialState: StatusState = {};

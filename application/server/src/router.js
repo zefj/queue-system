@@ -25,7 +25,7 @@ mainRouter.get('/queue/get', [
 mainRouter.post('/queue/create', queue.create);
 mainRouter.post('/queue/:queue/remove', queue.remove);
 
-mainRouter.get('/queue/:queue/room/get', room.getAll);
+mainRouter.get('/queue/:queue/room/get', room.get);
 mainRouter.post('/queue/:queue/room/create', room.create);
 mainRouter.post('/room/:room/remove', room.remove);
 

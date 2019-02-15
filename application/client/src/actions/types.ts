@@ -1,5 +1,6 @@
 import { StatusAction } from './status';
 import { QueuesActions } from './queues';
+import { RoomsActions } from './rooms';
 
 export interface IQueue {
     id: number;
@@ -14,7 +15,16 @@ export interface IQueueWithStats extends IQueue {
     tickets_count: number;
 }
 
-export type Actions = QueuesActions | StatusAction;
+export interface IRoom {
+    id: number;
+    tenant: string;
+    name: string;
+    queue_id: number;
+    created: string;
+    updated: string;
+}
+
+export type Actions = QueuesActions | StatusAction | RoomsActions;
 
 export interface ServerException {
     message: string;
