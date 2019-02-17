@@ -2,13 +2,14 @@ import { Request, Response } from 'express';
 const joi = require('joi');
 const errors = require('common-errors');
 
-import Queue from './queue-model';
+import Queue, { QueueModes } from './queue-model';
 
 import {
     create as createQueue, getQueueById,
     getQueues,
     remove as removeQueue,
 } from './queue-actions';
+import { validationInvariant } from '../utils/joi-validation';
 
 export const getAll: Function = (req: Request, res: Response, next: any) => {
     return getQueues(req.locals.tenant)
@@ -33,8 +34,15 @@ export const getOne = (req: Request, res: Response, next: any) => {
 };
 
 export const create: Function = (req: Request, res: Response, next: any) => {
+    const schema = joi.object().keys({
+        name: joi.string().max(32).required().label('Name'),
+        mode: joi.string().valid(Object.values(QueueModes)).required(),
+    });
+
+    validationInvariant(req.body, schema);
+
     // name validation in action
-    return createQueue(req.locals.tenant, req.body.name)
+    return createQueue(req.locals.tenant, req.body.name, req.body.mode)
         .then((queues: Queue) => res.json({ queues }))
         .catch(next);
 };

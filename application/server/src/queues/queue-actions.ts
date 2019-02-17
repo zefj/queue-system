@@ -1,12 +1,6 @@
-import {
-    // JoiValidationError,
-    validationInvariant
-} from '../utils/joi-validation';
-
-const joi = require('joi');
 const errors = require('common-errors');
 
-import Queue from './queue-model';
+import Queue, { QueueModes } from './queue-model';
 import { NotPermittedError } from '../utils/NotPermittedError';
 
 export interface IGetQueuesQueryResult extends Queue {
@@ -40,15 +34,9 @@ export const getQueueById = (tenant, id: number): Promise<Queue> => {
         });
 };
 
-export const create = (tenant: string, name: string): Promise<Queue> => {
-    const schema = joi.object().keys({
-        name: joi.string().max(32).required().label('Name'),
-    });
-
-    validationInvariant({ name }, schema);
-
+export const create = (tenant: string, name: string, mode: QueueModes): Promise<Queue> => {
     return Queue.query().context({ tenant })
-        .insert({ name })
+        .insert({ name, mode })
         .catch((error: Error) => {
             if (error instanceof Queue.errors.UniqueViolationError) {
                 throw new NotPermittedError('ALREADY-EXISTS', `Queue of name ${name} already exists.`);

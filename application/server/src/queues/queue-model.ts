@@ -2,12 +2,18 @@
 import { Model } from 'objection';
 import { TimestampsMixin, TenantModel } from '../database';
 
+export enum QueueModes {
+    FREE = 'free',
+    SEQUENTIAL = 'sequential',
+}
+
 export default class Queue extends TimestampsMixin(TenantModel) {
     static tableName = 'queues';
     static idColumn = 'id';
 
     readonly id!: number;
     name!: string;
+    mode!: QueueModes;
 
     static relationMappings = {
         rooms: {

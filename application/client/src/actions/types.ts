@@ -6,8 +6,14 @@ export interface IQueue {
     id: number;
     tenant: string;
     name: string;
+    mode: QueueModes;
     created_at: string;
     updated_at: string;
+}
+
+export enum QueueModes {
+    FREE = 'free',
+    SEQUENTIAL = 'sequential',
 }
 
 export interface IQueueWithStats extends IQueue {

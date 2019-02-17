@@ -165,6 +165,9 @@ paths:
                 name:
                   type: string
                   maxLength: 32
+                mode:
+                  type: string
+                  enum: [free, sequential]
       responses:
         200:
           description: "Success response"

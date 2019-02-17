@@ -25,8 +25,10 @@ exports.up = function(knex, Promise) {
                 .onDelete('CASCADE');
 
             table.string('name', 32).notNullable();
+            table.enum('mode', ['free', 'sequential']).notNullable();
 
             table.unique(['name', 'tenant']);
+
             table.timestamp('created_at').defaultTo(knex.fn.now()).notNullable();
             table
                 .timestamp('updated_at')

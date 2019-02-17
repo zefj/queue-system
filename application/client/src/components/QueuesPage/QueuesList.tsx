@@ -72,6 +72,11 @@ class QueuesListComponent extends Component<Props, State> {
                     key="name"
                 />
                 <Table.Column
+                    title="Mode"
+                    dataIndex="mode"
+                    key="mode"
+                />
+                <Table.Column
                     title="Created at"
                     dataIndex="created_at"
                     key="created_at"
