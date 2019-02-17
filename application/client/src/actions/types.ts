@@ -16,9 +16,8 @@ export enum QueueModes {
     SEQUENTIAL = 'sequential',
 }
 
-export interface IQueueWithStats extends IQueue {
-    rooms_count: number;
-    tickets_count: number;
+export interface IQueueWithRooms extends IQueue {
+    rooms: IRoom[];
 }
 
 export interface IRoom {

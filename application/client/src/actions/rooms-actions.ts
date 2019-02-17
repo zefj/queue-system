@@ -2,6 +2,7 @@ import { getClient } from '../api/client';
 import { StatusActionTypes, withStatus } from './status-actions';
 import { Action } from 'redux';
 import { IRoom } from './types';
+import { fetchQueue } from './queues-actions';
 
 export enum RoomsActionTypes {
     SET_QUEUE_ROOMS = 'SET_QUEUE_ROOMS',
@@ -27,19 +28,6 @@ export const setQueueRooms = (
     };
 };
 
-export const fetchRoomsForQueue = (queueId: number): ThunkResult<Promise<void>> => {
-    return async (dispatch) => {
-        const client = await getClient();
-
-        const response = await dispatch(withStatus(
-            StatusActionTypes.FETCH_QUEUE_ROOMS,
-            () => client.apis.rooms.getQueueRooms({ queue_id: queueId }),
-        ));
-
-        dispatch(setQueueRooms(response.body.rooms));
-    };
-};
-
 export const createRoom = (queueId: number, name: string): ThunkResult<Promise<void>> => {
     return async (dispatch) => {
         const client = await getClient();
@@ -49,6 +37,6 @@ export const createRoom = (queueId: number, name: string): ThunkResult<Promise<v
             () => client.apis.rooms.createRoom({ queue_id: queueId }, { requestBody: { name } }),
         ));
 
-        dispatch(fetchRoomsForQueue(queueId));
+        dispatch(fetchQueue(queueId));
     };
 };

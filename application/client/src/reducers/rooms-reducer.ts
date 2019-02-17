@@ -25,4 +25,3 @@ export const roomsReducer = (
     }
 };
 
-export const getQueueRooms = (state: RootState) => state.rooms.data;

@@ -1,28 +1,26 @@
+import Room from '../rooms/room-model';
+
 const errors = require('common-errors');
 
 import Queue, { QueueModes } from './queue-model';
 import { NotPermittedError } from '../utils/NotPermittedError';
 
-export interface IGetQueuesQueryResult extends Queue {
-    rooms_count: number;
-    tickets_count: number;
+// Do we need this?
+export interface IQueueWithRooms {
+    rooms: Room[];
 }
 
-export const getQueues = (tenant: string): Promise<IGetQueuesQueryResult[]> => {
+export const getQueues = (tenant: string): Promise<IQueueWithRooms[]> => {
     return Queue.query().context({ tenant })
-        .select([
-            'queues.*',
-            Queue.relatedQuery('rooms').context({ tenant }).count().as('rooms_count'),
-            Queue.relatedQuery('tickets').context({ tenant }).count().as('tickets_count'),
-        ])
-        // objectionjs thinks this is Queue[], and it is, but Queue is extended due to the select above
-        .then((queues: any) => {
-            return queues as IGetQueuesQueryResult[];
+        .eager('rooms')
+        .then((queues: Queue[]) => {
+            return queues as IQueueWithRooms[];
         });
 };
 
-export const getQueueById = (tenant, id: number): Promise<Queue> => {
+export const getQueueById = (tenant, id: number): Promise<IQueueWithRooms> => {
     return Queue.query().context({ tenant })
+        .eager('rooms')
         .where('id', id)
         .first()
         .then((queue: Queue | undefined) => {
@@ -30,7 +28,7 @@ export const getQueueById = (tenant, id: number): Promise<Queue> => {
                 throw new errors.NotFoundError(`Queue of id ${id} does not exist.`);
             }
 
-            return queue;
+            return queue as IQueueWithRooms;
         });
 };
 

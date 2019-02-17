@@ -7,7 +7,7 @@ import './ManagePage.css';
 import { ManagePageMenu } from './ManagePageMenu';
 import { Route, RouteComponentProps, withRouter } from 'react-router';
 import { QueuesList } from '../QueuesPage/QueuesList';
-import { QueueDetails } from '../QueueDetails/QueueDetails';
+import QueueDetails from '../QueueDetails/QueueDetails';
 
 type Props = RouteComponentProps;
 

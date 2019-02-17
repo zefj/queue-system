@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 import styled from 'styled-components';
-import { IQueueWithStats } from '../../actions/types';
+import { IQueueWithRooms } from '../../actions/types';
 import { StatusActionPayload, StatusActionTypes } from '../../actions/status-actions';
 import { RootState } from '../../reducers/root-reducer';
 import { getQueue } from '../../reducers/queues-reducer';
@@ -30,17 +30,7 @@ const QueueInfoItemLabel = styled.span`
 const QueueInfoItemValue = styled.span``;
 
 class QueueInfo extends Component<Props> {
-    componentDidMount() {
-        this.props.fetchQueue(this.props.id);
-    }
-
     render() {
-        if (this.props.fetchQueueStatus.status === 'failed') {
-            return (
-                <ServerErrorEmpty />
-            );
-        }
-
         if (!this.props.queue) {
             return (
                 <Skeleton title={false} active />
@@ -81,12 +71,11 @@ class QueueInfo extends Component<Props> {
 }
 
 interface StateProps {
-    queue: IQueueWithStats | undefined;
+    queue: IQueueWithRooms | undefined;
     fetchQueueStatus: StatusActionPayload;
 }
 
 interface DispatchProps {
-    fetchQueue: (queueId: number) => Promise<any>;
 }
 
 export interface OwnProps {
@@ -103,7 +92,6 @@ const mapStateToProps = (state: RootState, ownProps: OwnProps): StateProps => ({
 });
 
 const mapDispatchToProps = (dispatch: ThunkDispatch): DispatchProps => ({
-    fetchQueue: (id: number) => dispatch(fetchQueue(id)),
 });
 
 export default connect<StateProps, DispatchProps, OwnProps, RootState>(

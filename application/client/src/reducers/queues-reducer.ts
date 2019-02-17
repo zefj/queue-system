@@ -1,11 +1,11 @@
 import * as _ from 'lodash';
 
 import { RootState } from './root-reducer';
-import { IQueueWithStats } from '../actions/types';
+import { IQueueWithRooms, IRoom } from '../actions/types';
 import { QueuesActions, QueuesActionTypes } from '../actions/queues-actions';
 
 export type QueuesById = {
-    [s: string]: IQueueWithStats,
+    [s: string]: IQueueWithRooms,
 };
 
 export interface QueuesState {
@@ -25,7 +25,7 @@ export const queuesReducer = (
             return {
                 ...state,
                 list: action.payload.queues.reduce(
-                    (obj: any, item: IQueueWithStats) => {
+                    (obj: any, item: IQueueWithRooms) => {
                         obj[item.id] = item;
                         return obj;
                     },
@@ -46,7 +46,7 @@ export const queuesReducer = (
 };
 
 // export const getQueue = (state: RootState, id: number) => _.find(state.queues.list, a => a.id === id);
-export const getQueue = (id: number, state: RootState): IQueueWithStats | undefined => {
+export const getQueue = (id: number, state: RootState): IQueueWithRooms | undefined => {
     return _.get(state.queues.list, id);
 
     if (_.isEmpty(state.queues.list)) {
@@ -56,10 +56,14 @@ export const getQueue = (id: number, state: RootState): IQueueWithStats | undefi
     return (state.queues.list as QueuesById)[id];
 };
 export const getQueuesById = (state: RootState) => state.queues.list;
-export const getQueuesList = (state: RootState): IQueueWithStats[] | [] => {
+export const getQueuesList = (state: RootState): IQueueWithRooms[] | [] => {
     if (_.isEmpty(state.queues.list)) {
         return [];
     }
 
     return Object.values(state.queues.list as QueuesById);
+};
+
+export const getQueueRooms = (id: number, state: RootState): IRoom[] | [] => {
+    return _.get(state.queues.list, `${id}.rooms`, []) as IRoom[] | [];
 };

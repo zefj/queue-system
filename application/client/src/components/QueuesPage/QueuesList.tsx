@@ -6,7 +6,7 @@ import { Button, Empty, Skeleton, Table } from 'antd';
 
 import { RootState } from '../../reducers/root-reducer';
 import { createQueue, fetchQueues, removeQueue } from '../../actions/queues-actions';
-import { IQueueWithStats } from '../../actions/types';
+import { IQueueWithRooms } from '../../actions/types';
 import { getQueuesList } from '../../reducers/queues-reducer';
 import { getActionStatus } from '../../reducers/status-reducer';
 import { StatusActionPayload, StatusActionTypes } from '../../actions/status-actions';
@@ -63,7 +63,7 @@ class QueuesListComponent extends Component<Props, State> {
         // TODO: animate row deletion and addition
         return (
             <Table
-                dataSource={this.props.queues as IQueueWithStats[]}
+                dataSource={this.props.queues as IQueueWithRooms[]}
                 pagination={{ pageSize: 10 }}
             >
                 <Table.Column
@@ -83,18 +83,13 @@ class QueuesListComponent extends Component<Props, State> {
                 />
                 <Table.Column
                     title="Rooms"
-                    dataIndex="rooms_count"
+                    render={(queue: IQueueWithRooms) => queue.rooms.length}
                     key="rooms_count"
-                />
-                <Table.Column
-                    title="Tickets"
-                    dataIndex="tickets_count"
-                    key="tickets_count"
                 />
                 <Table.Column
                     align="right"
                     key="action"
-                    render={(queue: IQueueWithStats) => {
+                    render={(queue: IQueueWithRooms) => {
                         const { status, additional } = this.props.removeStatus;
 
                         return (
@@ -166,7 +161,7 @@ class QueuesListComponent extends Component<Props, State> {
 }
 
 interface StateProps {
-    queues: IQueueWithStats[] | null;
+    queues: IQueueWithRooms[] | null;
     fetchStatus: StatusActionPayload;
     removeStatus: StatusActionPayload;
 }
@@ -174,7 +169,7 @@ interface StateProps {
 interface DispatchProps {
     fetchQueues: () => {};
     createQueue: (fields: NewQueueFormFields) => Promise<any>;
-    removeQueue: (queue: IQueueWithStats) => Promise<any>;
+    removeQueue: (queue: IQueueWithRooms) => Promise<any>;
 }
 
 interface OwnProps {}
@@ -190,7 +185,7 @@ const mapStateToProps = (state: RootState): StateProps => ({
 const mapDispatchToProps = (dispatch: ThunkDispatch, ownProps: OwnProps): DispatchProps => ({
     fetchQueues: () => dispatch(fetchQueues()),
     createQueue: (fields: NewQueueFormFields) => dispatch(createQueue(fields.name)),
-    removeQueue: (queue: IQueueWithStats) => dispatch(removeQueue(queue)),
+    removeQueue: (queue: IQueueWithRooms) => dispatch(removeQueue(queue)),
 });
 
 // tslint:disable-next-line:variable-name

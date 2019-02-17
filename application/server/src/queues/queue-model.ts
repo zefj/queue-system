@@ -1,6 +1,7 @@
 /* tslint:disable:variable-name */
 import { Model } from 'objection';
 import { TimestampsMixin, TenantModel } from '../database';
+import Room from '../rooms/room-model';
 
 export enum QueueModes {
     FREE = 'free',
@@ -14,6 +15,7 @@ export default class Queue extends TimestampsMixin(TenantModel) {
     readonly id!: number;
     name!: string;
     mode!: QueueModes;
+    rooms?: Partial<Room>[];
 
     static relationMappings = {
         rooms: {

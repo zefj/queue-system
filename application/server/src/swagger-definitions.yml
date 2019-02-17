@@ -67,10 +67,17 @@ components:
         name:
           type: string
           maxLength: 32
+        mode:
+          type: string
+          enum: [free, sequential]
         created_at:
           type: string
         updated_at:
           type: string
+        rooms:
+          type: array
+          items:
+            $ref: '#/components/schemas/Room'
     Room:
       type: "object"
       properties:
@@ -109,14 +116,7 @@ paths:
                   queues:
                     type: "array"
                     items:
-                      allOf:
-                      - $ref: '#/components/schemas/Queue'
-                      - type: object
-                        properties:
-                          rooms_count:
-                            type: integer
-                          tickets_count:
-                            type: integer
+                      $ref: '#/components/schemas/Queue'
 
   /queue/{queue_id}/get:
     get:

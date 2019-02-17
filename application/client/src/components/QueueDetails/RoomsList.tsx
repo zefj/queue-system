@@ -4,8 +4,8 @@ import { connect } from 'react-redux';
 import { RootState } from '../../reducers/root-reducer';
 
 import { Avatar, Button, Empty, Input, List, Skeleton } from 'antd';
-import { createRoom, fetchRoomsForQueue } from '../../actions/rooms-actions';
-import { getQueueRooms } from '../../reducers/rooms-reducer';
+import { createRoom } from '../../actions/rooms-actions';
+import { getQueueRooms } from '../../reducers/queues-reducer';
 import { getActionStatus } from '../../reducers/status-reducer';
 import { StatusActionPayload, StatusActionTypes } from '../../actions/status-actions';
 import { IRoom } from '../../actions/types';
@@ -25,16 +25,16 @@ class RoomsList extends Component<Props, State> {
         this.addRoomInput = null;
     }
 
-    componentDidMount() {
-        this.props.fetchQueueRooms(this.props.queueId);
-    }
-
     componentDidUpdate() {
         this.addRoomInput && this.addRoomInput.focus();
     }
 
     showNewRoomForm = () => {
         this.setState({ show_add_room_form: true });
+    }
+
+    hideNewRoomForm = () => {
+        this.setState({ show_add_room_form: false });
     }
 
     renderListItem(room: IRoom) {
@@ -59,7 +59,12 @@ class RoomsList extends Component<Props, State> {
         if (this.state.show_add_room_form) {
             content = (
                 <List.Item.Meta
-                    title={<RoomQuickAddForm queueId={this.props.queueId} />}
+                    title={
+                        <RoomQuickAddForm
+                            queueId={this.props.queueId}
+                            onSuccess={this.hideNewRoomForm}
+                        />
+                    }
                 />
             );
         } else {
@@ -103,13 +108,7 @@ class RoomsList extends Component<Props, State> {
     }
 
     render() {
-        if (this.props.roomFetchStatus.status === 'failed') {
-            return (
-                <ServerErrorEmpty />
-            );
-        }
-
-        if (this.props.roomFetchStatus.status === 'started') {
+        if (_.isEmpty(this.props.rooms) && this.props.fetchQueueStatus.status === 'started') {
             return (
                 <Skeleton active />
             );
@@ -135,11 +134,10 @@ class RoomsList extends Component<Props, State> {
 
 interface StateProps {
     rooms: IRoom[] | null;
-    roomFetchStatus: StatusActionPayload;
+    fetchQueueStatus: StatusActionPayload;
 }
 
 interface DispatchProps {
-    fetchQueueRooms: (queueId: number) => Promise<any>;
     createRoom: (name: string) => Promise<any>;
 }
 
@@ -154,12 +152,11 @@ interface State {
 }
 
 const mapStateToProps = (state: RootState, ownProps: OwnProps): StateProps => ({
-    rooms: getQueueRooms(state),
-    roomFetchStatus: getActionStatus(state, StatusActionTypes.FETCH_QUEUE_ROOMS),
+    rooms: getQueueRooms(ownProps.queueId, state),
+    fetchQueueStatus: getActionStatus(state, StatusActionTypes.FETCH_QUEUE),
 });
 
 const mapDispatchToProps = (dispatch: ThunkDispatch, ownProps: OwnProps): DispatchProps => ({
-    fetchQueueRooms: (queueId: number) => dispatch(fetchRoomsForQueue(queueId)),
     createRoom: (name: string) => dispatch(createRoom(ownProps.queueId, name)),
 });
 

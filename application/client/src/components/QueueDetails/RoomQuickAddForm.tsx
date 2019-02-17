@@ -21,7 +21,9 @@ class RoomQuickAddForm extends Component<Props, State> {
     handleSubmit = () => {
         return this.props.form.validateFields((err, values: RoomQuickAddFormFields) => {
             if (!err) {
-                this.props.createRoom(values.name);
+                this.props.createRoom(values.name).then(() => {
+                    this.props.onSuccess && this.props.onSuccess();
+                });
             }
         });
     }
@@ -107,6 +109,7 @@ interface DispatchProps {
 
 export interface OwnProps extends FormComponentProps {
     queueId: number;
+    onSuccess: Function | null;
 }
 
 type Props = StateProps & DispatchProps & OwnProps;

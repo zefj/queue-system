@@ -1,5 +1,5 @@
 import { getClient } from '../api/client';
-import { IQueueWithStats } from './types';
+import { IQueueWithRooms } from './types';
 import { StatusActionTypes, withStatus } from './status-actions';
 import { Action } from 'redux';
 
@@ -13,19 +13,19 @@ export type QueuesActions = ISetQueuesAction | ISetQueueAction;
 export interface ISetQueuesAction extends Action {
     type: QueuesActionTypes.SET_QUEUES;
     payload: {
-        queues: IQueueWithStats[],
+        queues: IQueueWithRooms[],
     };
 }
 
 export interface ISetQueueAction extends Action {
     type: QueuesActionTypes.SET_QUEUE;
     payload: {
-        queue: IQueueWithStats,
+        queue: IQueueWithRooms,
     };
 }
 
 export const setQueues = (
-    queues: IQueueWithStats[],
+    queues: IQueueWithRooms[],
 ): ISetQueuesAction => {
     return {
         type: QueuesActionTypes.SET_QUEUES,
@@ -36,7 +36,7 @@ export const setQueues = (
 };
 
 export const setQueue = (
-    queue: IQueueWithStats,
+    queue: IQueueWithRooms,
 ): ISetQueueAction => {
     return {
         type: QueuesActionTypes.SET_QUEUE,
@@ -92,7 +92,7 @@ export const createQueue = (
 };
 
 export const removeQueue = (
-    queue: IQueueWithStats,
+    queue: IQueueWithRooms,
 ): ThunkResult<Promise<void>> => {
     return async (dispatch) => {
         const client = await getClient();
