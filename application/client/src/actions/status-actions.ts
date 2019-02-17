@@ -9,6 +9,7 @@ export enum StatusActionTypes {
     FETCH_QUEUE_ROOMS = 'FETCH_QUEUE_ROOMS',
     CREATE_QUEUE = 'CREATE_QUEUE',
     REMOVE_QUEUE = 'REMOVE_QUEUE',
+    CREATE_ROOM = 'CREATE_ROOM',
 }
 
 export type ActionStatus = null | 'started' | 'finished' | 'failed';

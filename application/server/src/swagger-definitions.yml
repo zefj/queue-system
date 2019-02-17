@@ -47,6 +47,14 @@ components:
           error:
             type: string
 
+    NotFoundError:
+      allOf:
+      - $ref: '#/components/schemas/Error'
+      - type: object
+        properties:
+          error:
+            type: string
+
     Queue:
       type: "object"
       properties:
@@ -130,6 +138,14 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Queue'
+        403:
+          description: "Error response"
+          content:
+            application/json:
+              schema:
+                type: object
+                oneOf:
+                - $ref: "#/components/schemas/NotFoundError"
 
   /queue/create:
     post:
@@ -214,3 +230,50 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Queue'
+
+
+  /queue/{queue_id}/room/create:
+    post:
+      tags:
+      - "rooms"
+      summary: "Create a room"
+      operationId: "createRoom"
+      parameters:
+      - in: path
+        name: queue_id
+        required: true
+        schema:
+          type: integer
+          maxLength: 10
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - name
+              properties:
+                name:
+                  type: string
+                  maxLength: 32
+      responses:
+        200:
+          description: "Success response"
+          content:
+            application/json:
+              schema:
+                type: "object"
+                properties:
+                  queues:
+                    $ref: "#/components/schemas/Room"
+        403:
+          description: "Error response"
+          content:
+            application/json:
+              schema:
+                type: object
+                oneOf:
+                - $ref: "#/components/schemas/NotFoundError"
+                - $ref: "#/components/schemas/NotPermittedError"
+                - $ref: "#/components/schemas/JoiValidationError"

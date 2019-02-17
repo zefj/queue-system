@@ -39,3 +39,16 @@ export const fetchRoomsForQueue = (queueId: number): ThunkResult<Promise<void>> 
         dispatch(setQueueRooms(response.body.rooms));
     };
 };
+
+export const createRoom = (queueId: number, name: string): ThunkResult<Promise<void>> => {
+    return async (dispatch) => {
+        const client = await getClient();
+
+        const response = await dispatch(withStatus(
+            StatusActionTypes.CREATE_ROOM,
+            () => client.apis.rooms.createRoom({ queue_id: queueId }, { requestBody: { name } }),
+        ));
+
+        dispatch(fetchRoomsForQueue(queueId));
+    };
+};

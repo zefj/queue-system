@@ -1,3 +1,5 @@
+import { NotPermittedError } from '../utils/NotPermittedError';
+
 const joi = require('joi');
 const errors = require('common-errors');
 
@@ -36,7 +38,7 @@ export const create = (tenant, queueId: number, name: string): Promise<Room> => 
                 .insert({ name })
                 .catch((error: Error) => {
                     if (error instanceof Room.errors.UniqueViolationError) {
-                        throw new errors.NotPermittedError(`Room of name ${name} already exists.`);
+                        throw new NotPermittedError('ALREADY-EXISTS', `Room of name ${name} already exists.`);
                     }
 
                     throw error;

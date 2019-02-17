@@ -16,19 +16,17 @@ class ManagePageMenuComponent extends Component<Props> {
                 defaultOpenKeys={['sub1']}
                 style={{ height: '100%', borderRight: 0 }}
             >
-                <SubMenu key="sub1" title={<span><Icon type="user" />subnav 1</span>}>
-                    <Menu.Item key={`menu-item-${'/manage/queues'}`}>
-                        <Link to={'/manage/queues'}>
-                            Queues
-                        </Link>
-                    </Menu.Item>
-                    <Menu.Item key={`menu-item-${'/manage/rooms'}`}>
-                        <Link to={'/manage/rooms'}>
-                            Rooms
-                        </Link>
-                    </Menu.Item>
-                    <Menu.Item key="3">Tickets</Menu.Item>
-                </SubMenu>
+                <Menu.Item key={`menu-item-${'/manage/queues'}`}>
+                    <Link to={'/manage/queues'}>
+                        Queues
+                    </Link>
+                </Menu.Item>
+                <Menu.Item key={`menu-item-${'/manage/rooms'}`}>
+                    <Link to={'/manage/rooms'}>
+                        Rooms
+                    </Link>
+                </Menu.Item>
+                <Menu.Item key="3">Tickets</Menu.Item>
                 <SubMenu key="sub2" title={<span><Icon type="laptop" />Statistics</span>}>
                     <Menu.Item key="5">option5</Menu.Item>
                     <Menu.Item key="6">option6</Menu.Item>

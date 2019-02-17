@@ -39,6 +39,7 @@ const cssRegex = /\.css$/;
 const cssModuleRegex = /\.module\.css$/;
 const sassRegex = /\.(scss|sass)$/;
 const sassModuleRegex = /\.module\.(scss|sass)$/;
+const lessRegex = /\.less$/;
 
 // This is the production and development configuration.
 // It is focused on developer experience, fast rebuilds, and a minimal bundle.
@@ -103,12 +104,22 @@ module.exports = function (webpackEnv) {
             },
         ].filter(Boolean);
         if (preProcessor) {
-            loaders.push({
-                loader: require.resolve(preProcessor),
-                options: {
-                    sourceMap: isEnvProduction ? shouldUseSourceMap : isEnvDevelopment,
-                },
-            });
+            if (typeof preProcessor === 'object') {
+                loaders.push({
+                    loader: require.resolve(preProcessor.loader),
+                    options: {
+                        sourceMap: isEnvProduction ? shouldUseSourceMap : isEnvDevelopment,
+                        ...preProcessor.options,
+                    },
+                });
+            } else {
+                loaders.push({
+                    loader: require.resolve(preProcessor),
+                    options: {
+                        sourceMap: isEnvProduction ? shouldUseSourceMap : isEnvDevelopment,
+                    },
+                });
+            }
         }
         return loaders;
     };
@@ -354,7 +365,7 @@ module.exports = function (webpackEnv) {
                                             // files are imported as they are.
                                             // But this config does not enable less parsing so we're shit out of luck
                                             // TODO: consider what to do with this shit
-                                            style: 'css'
+                                            style: true
                                         }
                                     ]
                                 ],
@@ -464,6 +475,33 @@ module.exports = function (webpackEnv) {
                                 },
                                 'sass-loader'
                             ),
+                        },
+                        {
+                            // We use styled-components or sass where needed, however require less to customize antd
+                            test: lessRegex,
+                            use: getStyleLoaders(
+                                {
+                                    importLoaders: 2,
+                                    sourceMap: isEnvProduction
+                                        ? shouldUseSourceMap
+                                        : isEnvDevelopment,
+                                },
+                                {
+                                    loader: 'less-loader',
+                                    options: {
+                                        // This takes variables from the less file and puts them here. No hot reloading
+                                        modifyVars: require('less-vars-to-js')(
+                                            fs.readFileSync(path.join(__dirname, '/../src/ant-theme-vars.less'), 'utf8')
+                                        ),
+                                        javascriptEnabled: true,
+                                    }
+                                }
+                            ),
+                            // Don't consider CSS imports dead code even if the
+                            // containing package claims to have no side effects.
+                            // Remove this when webpack adds a warning or an error for this.
+                            // See https://github.com/webpack/webpack/issues/6571
+                            sideEffects: true,
                         },
                         // "file" loader makes sure those assets get served by WebpackDevServer.
                         // When you `import` an asset, you get its (virtual) filename.

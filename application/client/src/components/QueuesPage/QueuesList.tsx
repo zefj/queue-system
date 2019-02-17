@@ -17,6 +17,7 @@ import { ButtonRow } from '../ButtonRow/ButtonRow';
 import { NewQueueFormFields, NewQueueForm } from './NewQueueForm';
 import { NavLink } from 'react-router-dom';
 import { PageHeader } from '../PageHeader/PageHeader';
+import { Block } from '../Block/Block';
 
 type State = {
     new_form: boolean,
@@ -149,7 +150,11 @@ class QueuesListComponent extends Component<Props, State> {
                         />
                 }
 
-                { this.getContent() }
+                <Block
+                    style={{ marginBottom: '40px' }}
+                >
+                    {this.getContent()}
+                </Block>
             </>
         );
     }
