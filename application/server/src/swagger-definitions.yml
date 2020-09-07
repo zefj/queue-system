@@ -1,0 +1,282 @@
+openapi: 3.0.0
+info:
+  title: "Queue"
+  version: "1.0.0"
+tags:
+- name: "queues"
+  description: "Queue operations"
+- name: "rooms"
+  description: "Rooms operations"
+- name: "tickets"
+  description: "Tickets operations"
+- name: "users"
+  description: "Users operations"
+
+components:
+  securitySchemes:
+    user_auth:
+      type: oauth2
+      flows:
+        password:
+          tokenUrl: /auth/user/authorize
+  schemas:
+    Error:
+      type: object
+      required:
+      - message
+      - type
+      properties:
+        type:
+          type: string
+        message:
+          type: string
+
+    JoiValidationError:
+      allOf:
+      - $ref: '#/components/schemas/Error'
+      - type: object
+        properties:
+          description: # TODO: describe this
+            type: object
+
+    NotPermittedError:
+      allOf:
+      - $ref: '#/components/schemas/Error'
+      - type: object
+        properties:
+          error:
+            type: string
+
+    NotFoundError:
+      allOf:
+      - $ref: '#/components/schemas/Error'
+      - type: object
+        properties:
+          error:
+            type: string
+
+    Queue:
+      type: "object"
+      properties:
+        id:
+          type: integer
+          maxLength: 10
+        tenant:
+          type: string
+          maxLength: 36
+        name:
+          type: string
+          maxLength: 32
+        mode:
+          type: string
+          enum: [free, sequential]
+        created_at:
+          type: string
+        updated_at:
+          type: string
+        rooms:
+          type: array
+          items:
+            $ref: '#/components/schemas/Room'
+    Room:
+      type: "object"
+      properties:
+        id:
+          type: integer
+          maxLength: 10
+        tenant:
+          type: string
+          maxLength: 36
+        name:
+          type: string
+          maxLength: 32
+        queue_id:
+          type: integer
+          maxLength: 10
+        created_at:
+          type: string
+        updated_at:
+          type: string
+
+paths:
+  /queue/get:
+    get:
+      tags:
+      - "queues"
+      summary: "Get a list of all queues"
+      operationId: "getQueues"
+      responses:
+        200:
+          description: "Success response"
+          content:
+            application/json:
+              schema:
+                type: "object"
+                properties:
+                  queues:
+                    type: "array"
+                    items:
+                      $ref: '#/components/schemas/Queue'
+
+  /queue/{queue_id}/get:
+    get:
+      tags:
+      - "queues"
+      summary: "Get information about a queue"
+      operationId: "getQueue"
+      parameters:
+      - in: path
+        name: queue_id
+        required: true
+        schema:
+          type: integer
+          maxLength: 10
+      responses:
+        200:
+          description: "Success response"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Queue'
+        403:
+          description: "Error response"
+          content:
+            application/json:
+              schema:
+                type: object
+                oneOf:
+                - $ref: "#/components/schemas/NotFoundError"
+
+  /queue/create:
+    post:
+      tags:
+      - "queues"
+      summary: "Create a new queue"
+      operationId: "createQueue"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - name
+              properties:
+                name:
+                  type: string
+                  maxLength: 32
+                mode:
+                  type: string
+                  enum: [free, sequential]
+      responses:
+        200:
+          description: "Success response"
+          content:
+            application/json:
+              schema:
+                type: "object"
+                properties:
+                  queues:
+                    $ref: "#/components/schemas/Queue"
+        403:
+          description: "Error response"
+          content:
+            application/json:
+              schema:
+                type: object
+                oneOf:
+                - $ref: "#/components/schemas/NotPermittedError"
+                - $ref: "#/components/schemas/JoiValidationError"
+
+  /queue/{queue_id}/remove:
+    post:
+      tags:
+      - "queues"
+      summary: "Remove a queue"
+      operationId: "removeQueue"
+      parameters:
+      - in: path
+        name: queue_id
+        required: true
+        schema:
+          type: integer
+          maxLength: 10
+      responses:
+        200:
+          description: "Success response"
+          content:
+            application/json:
+              schema:
+                type: "object"
+                properties:
+                  removed:
+                    description: "Amount of queues removed"
+                    type: "number"
+
+  /queue/{queue_id}/room/get:
+    get:
+      tags:
+      - "rooms"
+      summary: "Get rooms assigned to a queue"
+      operationId: "getQueueRooms"
+      parameters:
+      - in: path
+        name: queue_id
+        required: true
+        schema:
+          type: integer
+          maxLength: 10
+      responses:
+        200:
+          description: "Success response"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Queue'
+
+
+  /queue/{queue_id}/room/create:
+    post:
+      tags:
+      - "rooms"
+      summary: "Create a room"
+      operationId: "createRoom"
+      parameters:
+      - in: path
+        name: queue_id
+        required: true
+        schema:
+          type: integer
+          maxLength: 10
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - name
+              properties:
+                name:
+                  type: string
+                  maxLength: 32
+      responses:
+        200:
+          description: "Success response"
+          content:
+            application/json:
+              schema:
+                type: "object"
+                properties:
+                  queues:
+                    $ref: "#/components/schemas/Room"
+        403:
+          description: "Error response"
+          content:
+            application/json:
+              schema:
+                type: object
+                oneOf:
+                - $ref: "#/components/schemas/NotFoundError"
+                - $ref: "#/components/schemas/NotPermittedError"
+                - $ref: "#/components/schemas/JoiValidationError"

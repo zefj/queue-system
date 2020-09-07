@@ -1,0 +1,8 @@
+{
+  "watch": [
+    "src",
+    "lib"
+  ],
+  "ext": "js,ts",
+  "exec": "TS_NODE_FILES=true node -r ts-node/register ./src/server.ts"
+}
